@@ -1,0 +1,24 @@
+{
+  "target_host": "api.example.com",
+  "target_port": 443,
+  "target_domain": "api.example.com",
+  "api_base_url": "https://api.example.com",
+  "api_key": "sk-xxxxxxxxxxxxxxxx",
+  "api_model": "gpt-4o-mini",
+  "ping_count": 10,
+  "tcp_count": 10,
+  "http_timeout": 30,
+  "output_dir": "./probing_results",
+  "schedule": {
+    "l1_network": { "interval_sec": 30, "enabled": true },
+    "l2_security": { "interval_sec": 60, "enabled": true },
+    "l3_application": { "interval_sec": 30, "enabled": true },
+    "l4_business": { "interval_sec": 60, "enabled": true }
+  },
+  "alert": {
+    "p0": { "channels": ["phone", "pagerduty", "wechat"], "min_confirm": 3 },
+    "p1": { "channels": ["pagerduty", "wechat"], "min_confirm": 2 },
+    "p2": { "channels": ["wechat", "feishu"], "min_confirm": 1 },
+    "p3": { "channels": ["feishu", "email"], "min_confirm": 1 }
+  }
+}

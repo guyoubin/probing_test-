@@ -1,0 +1,2539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>拨测服务方案 — 全面网络质量与效果测试</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  
+  :root {
+    --neon-pink: #FF2E93;
+    --neon-cyan: #00F0FF;
+    --neon-purple: #B14EFF;
+    --neon-green: #00FF88;
+    --neon-yellow: #FFE156;
+    --bg-dark: #0A0A1A;
+    --bg-card: #12122A;
+    --bg-card-alt: #1A1A3A;
+    --text-primary: #E8E8F0;
+    --text-secondary: #9999BB;
+    --border-color: #2A2A4A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    line-height: 1.8;
+    font-size: 15px;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 30px 80px;
+  }
+
+  /* ===== COVER ===== */
+  .cover {
+    text-align: center;
+    padding: 80px 20px 60px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 50px;
+    position: relative;
+  }
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: -40px; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(255,46,147,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cover h1 {
+    font-size: 42px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+  }
+  .cover .subtitle {
+    font-size: 18px;
+    color: var(--text-secondary);
+    font-weight: 300;
+    margin-bottom: 30px;
+  }
+  .cover .meta {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .cover .meta span { display: flex; align-items: center; gap: 6px; }
+  .cover .meta .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .dot-pink { background: var(--neon-pink); box-shadow: 0 0 6px var(--neon-pink); }
+  .dot-cyan { background: var(--neon-cyan); box-shadow: 0 0 6px var(--neon-cyan); }
+  .dot-green { background: var(--neon-green); box-shadow: 0 0 6px var(--neon-green); }
+
+  /* ===== TOC ===== */
+  .toc {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 30px 36px;
+    margin-bottom: 50px;
+  }
+  .toc h2 {
+    font-size: 20px;
+    color: var(--neon-cyan);
+    margin-bottom: 18px;
+    font-weight: 600;
+  }
+  .toc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 30px;
+  }
+  .toc-item {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 6px 0;
+    font-size: 14px;
+    color: var(--text-secondary);
+    transition: color 0.2s;
+    text-decoration: none;
+  }
+  .toc-item:hover { color: var(--neon-cyan); }
+  .toc-num {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--neon-pink);
+    font-weight: 500;
+    min-width: 32px;
+  }
+
+  /* ===== SECTIONS ===== */
+  .section {
+    margin-bottom: 55px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 24px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--bg-dark);
+    background: var(--neon-cyan);
+    padding: 3px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+  .section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  .subsection {
+    margin-bottom: 30px;
+  }
+  .subsection-title {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--neon-cyan);
+    margin-bottom: 14px;
+    padding-left: 12px;
+    border-left: 3px solid var(--neon-pink);
+  }
+  .sub-subsection-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--neon-green);
+    margin: 16px 0 10px;
+  }
+
+  p {
+    margin-bottom: 12px;
+    color: var(--text-secondary);
+    line-height: 1.9;
+  }
+
+  strong {
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  /* ===== CARDS ===== */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 22px 26px;
+    margin-bottom: 16px;
+  }
+  .card-accent {
+    border-left: 3px solid var(--neon-cyan);
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 16px 0;
+  }
+  .card-grid-3 {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+  }
+  .stat-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--neon-cyan);
+  }
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* ===== TABLES ===== */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0 20px;
+    font-size: 13.5px;
+  }
+  thead th {
+    background: var(--bg-card-alt);
+    color: var(--neon-cyan);
+    font-weight: 600;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 2px solid var(--neon-pink);
+    font-size: 12.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  tbody td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-secondary);
+  }
+  tbody tr:hover { background: rgba(0,240,255,0.03); }
+  tbody tr:nth-child(even) { background: rgba(18,18,42,0.5); }
+
+  /* ===== LISTS ===== */
+  ul, ol {
+    margin: 10px 0 14px 20px;
+    color: var(--text-secondary);
+  }
+  li { margin-bottom: 5px; }
+  li::marker { color: var(--neon-pink); }
+
+  /* ===== CODE ===== */
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--bg-card-alt);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 13px;
+    color: var(--neon-green);
+  }
+
+  .code-block {
+    background: #0D0D20;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 14px 0 20px;
+    overflow-x: auto;
+    position: relative;
+  }
+  .code-block pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    white-space: pre;
+    margin: 0;
+  }
+  .code-block .lang-tag {
+    position: absolute;
+    top: 8px; right: 12px;
+    font-size: 10px;
+    color: var(--neon-purple);
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .code-block .copy-btn {
+    position: absolute;
+    top: 8px; right: 70px;
+    font-size: 10px;
+    color: var(--text-secondary);
+    background: var(--bg-card-alt);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 2px 8px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+  }
+  .copy-btn:hover { color: var(--neon-cyan); border-color: var(--neon-cyan); }
+
+  /* Syntax highlighting */
+  .hl-comment { color: #5C5C8A; }
+  .hl-keyword { color: var(--neon-pink); }
+  .hl-string { color: var(--neon-green); }
+  .hl-function { color: var(--neon-cyan); }
+  .hl-variable { color: var(--neon-yellow); }
+  .hl-number { color: var(--neon-purple); }
+
+  /* ===== BADGES ===== */
+  .badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .badge-pink { background: rgba(255,46,147,0.15); color: var(--neon-pink); border: 1px solid rgba(255,46,147,0.3); }
+  .badge-cyan { background: rgba(0,240,255,0.1); color: var(--neon-cyan); border: 1px solid rgba(0,240,255,0.2); }
+  .badge-green { background: rgba(0,255,136,0.1); color: var(--neon-green); border: 1px solid rgba(0,255,136,0.2); }
+  .badge-purple { background: rgba(177,78,255,0.1); color: var(--neon-purple); border: 1px solid rgba(177,78,255,0.2); }
+  .badge-yellow { background: rgba(255,225,86,0.1); color: var(--neon-yellow); border: 1px solid rgba(255,225,86,0.2); }
+
+  /* ===== FLOW ===== */
+  .flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+  }
+  .flow-step {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px 18px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+  .flow-arrow {
+    color: var(--neon-pink);
+    font-size: 18px;
+  }
+
+  /* ===== TIMELINE ===== */
+  .timeline {
+    position: relative;
+    padding-left: 28px;
+    margin: 16px 0;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px; top: 0; bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--neon-pink), var(--neon-cyan));
+  }
+  .timeline-item {
+    position: relative;
+    margin-bottom: 18px;
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -24px; top: 8px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--neon-cyan);
+    box-shadow: 0 0 8px var(--neon-cyan);
+  }
+  .timeline-item .t-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 14px;
+  }
+  .timeline-item .t-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+
+  /* ===== CALLOUT ===== */
+  .callout {
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 14px 0;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+  .callout-info {
+    background: rgba(0,240,255,0.06);
+    border: 1px solid rgba(0,240,255,0.15);
+  }
+  .callout-warn {
+    background: rgba(255,225,86,0.06);
+    border: 1px solid rgba(255,225,86,0.15);
+  }
+  .callout-tip {
+    background: rgba(0,255,136,0.06);
+    border: 1px solid rgba(0,255,136,0.15);
+  }
+  .callout-critical {
+    background: rgba(255,46,147,0.06);
+    border: 1px solid rgba(255,46,147,0.15);
+  }
+
+  /* ===== PROGRESS ===== */
+  .progress-bar {
+    background: var(--bg-card-alt);
+    border-radius: 6px;
+    height: 8px;
+    margin: 6px 0;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.5s;
+  }
+
+  /* ===== DIVIDER ===== */
+  .divider {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+    margin: 40px 0;
+  }
+
+  /* ===== APPENDIX CODE ===== */
+  .appendix-code {
+    background: #080818;
+    border: 1px solid #1E1E3A;
+    border-radius: 8px;
+    padding: 0;
+    margin: 20px 0 30px;
+    overflow: hidden;
+  }
+  .appendix-code-header {
+    background: var(--bg-card-alt);
+    padding: 10px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .appendix-code-header .title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--neon-cyan);
+    font-weight: 500;
+  }
+  .appendix-code pre {
+    padding: 18px;
+    margin: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.65;
+    color: #C8C8E0;
+    overflow-x: auto;
+    white-space: pre;
+  }
+
+  /* ===== FOOTER ===== */
+  .footer {
+    text-align: center;
+    padding: 40px 0 20px;
+    border-top: 1px solid var(--border-color);
+    margin-top: 60px;
+    color: var(--text-secondary);
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- ==================== COVER ==================== -->
+<div class="cover">
+  <h1>拨测服务方案</h1>
+  <div class="subtitle">全面网络质量与效果测试体系</div>
+  <div class="meta">
+    <span><span class="dot dot-pink"></span> 版本 v1.0</span>
+    <span><span class="dot dot-cyan"></span> 2026-06-15</span>
+    <span><span class="dot dot-green"></span> AI API 代理/网关业务</span>
+  </div>
+</div>
+
+<!-- ==================== TOC ==================== -->
+<div class="toc">
+  <h2>目录</h2>
+  <div class="toc-grid">
+    <a class="toc-item" href="#ch1"><span class="toc-num">01</span> 背景与目标</a>
+    <a class="toc-item" href="#ch2"><span class="toc-num">02</span> 需求分析</a>
+    <a class="toc-item" href="#ch3"><span class="toc-num">03</span> 测试体系总览</a>
+    <a class="toc-item" href="#ch4"><span class="toc-num">04</span> 测试指标定义</a>
+    <a class="toc-item" href="#ch5"><span class="toc-num">05</span> 测试节点规划</a>
+    <a class="toc-item" href="#ch6"><span class="toc-num">06</span> 测试流程与用例</a>
+    <a class="toc-item" href="#ch7"><span class="toc-num">07</span> 测试结果分析</a>
+    <a class="toc-item" href="#ch8"><span class="toc-num">08</span> 告警与运维保障</a>
+    <a class="toc-item" href="#ch9"><span class="toc-num">09</span> 工具链与部署</a>
+    <a class="toc-item" href="#ch10"><span class="toc-num">10</span> 附录：测试脚本</a>
+  </div>
+</div>
+
+<!-- ==================== CH1: 背景与目标 ==================== -->
+<div class="section" id="ch1">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <span class="section-title">背景与目标</span>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">1.1 业务背景</div>
+    <p>AI API 代理/网关服务作为连接终端用户与上游 AI 能力的核心枢纽，其网络质量直接决定了服务的可用性与用户体验。与传统的 CDN 或 API 网关不同，AI API 代理面临以下独特挑战：</p>
+    <div class="card-grid card-grid-3">
+      <div class="stat-card">
+        <div class="stat-value">流式</div>
+        <div class="stat-label">SSE 长连接传输</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">TLS</div>
+        <div class="stat-label">透传与证书链</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">全球</div>
+        <div class="stat-label">跨境节点调度</div>
+      </div>
+    </div>
+    <ul>
+      <li><strong>长连接稳定性</strong>：AI 模型推理响应时间通常 2-30s，且采用 SSE 流式输出，对网络抖动和断连极其敏感</li>
+      <li><strong>TLS 透传需求</strong>：代理业务需在用户无感知的前提下完成请求转发，TLS 握手延迟直接影响首字节时间</li>
+      <li><strong>跨境链路质量</strong>：代理用户需要通过海外出口访问上游 AI 服务，跨境链路的丢包、延迟、路由绕行是核心瓶颈</li>
+      <li><strong>数据飞轮闭环</strong>：拨测数据是构建"质量感知→动态调度→体验提升→更多流量→更优数据"飞轮的关键输入</li>
+    </ul>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">1.2 方案目标</div>
+    <div class="card card-accent">
+      <table>
+        <thead>
+          <tr><th>目标维度</th><th>具体指标</th><th>目标值</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>可用性感知</strong></td><td>拨测覆盖率（节点×目标）</td><td>≥ 95%</td></tr>
+          <tr><td><strong>延迟感知</strong></td><td>端到端延迟测量误差</td><td>≤ ±5ms</td></tr>
+          <tr><td><strong>故障发现</strong></td><td>P0 故障发现时间</td><td>≤ 30s</td></tr>
+          <tr><td><strong>路由优化</strong></td><td>路由异常检出率</td><td>≥ 99%</td></tr>
+          <tr><td><strong>数据闭环</strong></td><td>拨测→调度决策延迟</td><td>≤ 60s</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">1.3 核心原则</div>
+    <div class="card-grid">
+      <div class="card">
+        <strong style="color:var(--neon-pink)">主动 + 被动结合</strong>
+        <p style="font-size:13px">主动拨测发现潜在问题，被动采集反映真实用户体感，两者交叉验证</p>
+      </div>
+      <div class="card">
+        <strong style="color:var(--neon-cyan)">多维度全覆盖</strong>
+        <p style="font-size:13px">网络层→传输层→应用层→业务层，逐层验证，不留盲区</p>
+      </div>
+      <div class="card">
+        <strong style="color:var(--neon-green)">全球节点对等</strong>
+        <p style="font-size:13px">所有测试从全球多节点发起，模拟真实用户地理分布</p>
+      </div>
+      <div class="card">
+        <strong style="color:var(--neon-purple)">数据驱动决策</strong>
+        <p style="font-size:13px">拨测结果直接驱动调度策略更新，形成数据飞轮</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ==================== CH2: 需求分析 ==================== -->
+<div class="section" id="ch2">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <span class="section-title">需求分析</span>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">2.1 网络质量测试需求</div>
+    <table>
+      <thead>
+        <tr><th>测试维度</th><th>测试项</th><th>优先级</th><th>频次</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>DNS</td><td>解析延迟、解析准确性、DNS 劫持检测</td><td><span class="badge badge-pink">P0</span></td><td>30s</td></tr>
+        <tr><td>ICMP</td><td>RTT 延迟、丢包率、抖动</td><td><span class="badge badge-pink">P0</span></td><td>30s</td></tr>
+        <tr><td>TCP</td><td>握手延迟、连接成功率、RST 异常</td><td><span class="badge badge-pink">P0</span></td><td>30s</td></tr>
+        <tr><td>TLS</td><td>握手延迟、协议版本、证书链有效性</td><td><span class="badge badge-cyan">P1</span></td><td>60s</td></tr>
+        <tr><td>路由</td><td>Traceroute 路径、AS 路径、跨境绕行检测</td><td><span class="badge badge-cyan">P1</span></td><td>5min</td></tr>
+        <tr><td>带宽</td><td>可用带宽估测、突发带宽测试</td><td><span class="badge badge-purple">P2</span></td><td>10min</td></tr>
+        <tr><td>MTR</td><td>逐跳丢包与延迟诊断</td><td><span class="badge badge-cyan">P1</span></td><td>5min</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">2.2 服务效果测试需求</div>
+    <table>
+      <thead>
+        <tr><th>测试维度</th><th>测试项</th><th>优先级</th><th>频次</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>HTTP 基础</td><td>状态码、首字节时间 (TTFB)、总耗时</td><td><span class="badge badge-pink">P0</span></td><td>30s</td></tr>
+        <tr><td>API 性能</td><td>请求延迟 P50/P90/P99、吞吐量 (QPS)</td><td><span class="badge badge-pink">P0</span></td><td>30s</td></tr>
+        <tr><td>流式响应</td><td>SSE 首 Token 延迟、Token 间隔、断连率</td><td><span class="badge badge-pink">P0</span></td><td>60s</td></tr>
+        <tr><td>并发能力</td><td>阶梯加压测试、连接池极限</td><td><span class="badge badge-cyan">P1</span></td><td>按需</td></tr>
+        <tr><td>错误诊断</td><td>错误码分布、超时率、重定向链</td><td><span class="badge badge-pink">P0</span></td><td>30s</td></tr>
+        <tr><td>内容验证</td><td>响应体完整性、内容篡改检测</td><td><span class="badge badge-cyan">P1</span></td><td>60s</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">2.3 业务场景测试需求</div>
+    <table>
+      <thead>
+        <tr><th>场景</th><th>测试内容</th><th>关注指标</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Chat Completion</strong></td><td>OpenAI 兼容接口 /v1/chat/completions</td><td>首 Token 延迟、Token/s、断连率</td></tr>
+        <tr><td><strong>Embedding</strong></td><td>/v1/embeddings 批量请求</td><td>批量延迟、吞吐量</td></tr>
+        <tr><td><strong>Image Generation</strong></td><td>/v1/images/generations</td><td>端到端耗时、大响应体传输完整性</td></tr>
+        <tr><td><strong>Function Calling</strong></td><td>含 tools 参数的复杂请求</td><td>请求序列完整性、流式输出正确性</td></tr>
+        <tr><td><strong>多模型切换</strong></td><td>不同 model 参数的路由准确性</td><td>路由正确率、模型可用性</td></tr>
+        <tr><td><strong>认证鉴权</strong></td><td>API Key / Bearer Token 透传</td><td>认证成功率、鉴权延迟</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">2.4 合规与安全测试需求</div>
+    <ul>
+      <li><strong>TLS 版本合规</strong>：确认所有链路仅支持 TLS 1.2+，拒绝 TLS 1.0/1.1</li>
+      <li><strong>证书链完整性</strong>：验证中间证书安装正确，无不信任链</li>
+      <li><strong>HSTS 策略</strong>：检查 Strict-Transport-Security 头配置</li>
+      <li><strong>DNSSEC 验证</strong>：确认 DNSSEC 签名有效</li>
+      <li><strong>敏感信息泄露</strong>：检测响应头是否泄露服务版本、内部 IP 等</li>
+    </ul>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ==================== CH3: 测试体系总览 ==================== -->
+<div class="section" id="ch3">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <span class="section-title">测试体系总览</span>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">3.1 四层测试架构</div>
+    <div class="flow">
+      <div class="flow-step" style="border-color:var(--neon-pink)">L1 网络可达性<br><span style="font-size:11px;color:var(--text-secondary)">ICMP / DNS / TCP</span></div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step" style="border-color:var(--neon-cyan)">L2 传输安全性<br><span style="font-size:11px;color:var(--text-secondary)">TLS / 证书 / 协议</span></div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step" style="border-color:var(--neon-green)">L3 应用可用性<br><span style="font-size:11px;color:var(--text-secondary)">HTTP / API / 流式</span></div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step" style="border-color:var(--neon-purple)">L4 业务正确性<br><span style="font-size:11px;color:var(--text-secondary)">功能 / 路由 / 鉴权</span></div>
+    </div>
+    <p>每层测试独立运行、互不依赖，但结果汇总时从下往上归因——<strong>下层异常可直接解释上层故障</strong>。</p>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">3.2 拨测模式</div>
+    <div class="card-grid">
+      <div class="card card-accent">
+        <strong style="color:var(--neon-pink)">主动拨测 (Synthetic)</strong>
+        <p style="font-size:13px;margin-top:8px">从全球探针节点主动发起测试请求，模拟用户行为。优点：可复现、可对比、不受业务流量影响。缺点：不能完全反映真实用户分布。</p>
+        <div style="margin-top:8px"><span class="badge badge-pink">定时触发</span> <span class="badge badge-cyan">全局视角</span></div>
+      </div>
+      <div class="card card-accent">
+        <strong style="color:var(--neon-cyan)">被动采集 (Real User)</strong>
+        <p style="font-size:13px;margin-top:8px">从真实用户请求中提取网络质量指标（RUM）。优点：真实体感、无需额外流量。缺点：依赖客户端埋点、无法覆盖无流量区域。</p>
+        <div style="margin-top:8px"><span class="badge badge-cyan">实时采集</span> <span class="badge badge-green">真实体感</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">3.3 拨测类型矩阵</div>
+    <div class="card">
+      <table>
+        <thead>
+          <tr><th>拨测类型</th><th>协议层</th><th>关键指标</th><th>告警策略</th><th>执行方</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Ping</td><td>ICMP</td><td>RTT、丢包率</td><td>连续3次超阈值</td><td>Agent</td></tr>
+          <tr><td>TCP Connect</td><td>TCP</td><td>握手延迟、成功率</td><td>成功率 < 95%</td><td>Agent</td></tr>
+          <tr><td>DNS Resolve</td><td>DNS</td><td>解析延迟、结果一致性</td><td>解析结果不一致</td><td>Agent</td></tr>
+          <tr><td>TLS Handshake</td><td>TLS</td><td>握手延迟、协议版本</td><td>协议 ≤ TLS 1.1</td><td>Agent</td></tr>
+          <tr><td>HTTP GET/POST</td><td>HTTP</td><td>TTFB、总耗时、状态码</td><td>非200状态码</td><td>Agent</td></tr>
+          <tr><td>API Function Test</td><td>HTTPS</td><td>端到端延迟、功能正确性</td><td>功能异常</td><td>Agent</td></tr>
+          <tr><td>SSE Stream Test</td><td>HTTPS</td><td>首Token延迟、Token间隔</td><td>断连率 > 1%</td><td>Agent</td></tr>
+          <tr><td>Traceroute / MTR</td><td>ICMP/TCP</td><td>路由路径、逐跳丢包</td><td>路由绕行</td><td>Agent</td></tr>
+          <tr><td>Bandwidth</td><td>TCP</td><td>可用带宽、吞吐量</td><td>带宽骤降</td><td>Agent</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ==================== CH4: 测试指标定义 ==================== -->
+<div class="section" id="ch4">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <span class="section-title">测试指标定义</span>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">4.1 核心指标体系</div>
+    <table>
+      <thead>
+        <tr><th>指标名称</th><th>英文缩写</th><th>计算方式</th><th>单位</th><th>SLA 阈值</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>往返延迟</td><td>RTT</td><td>ICMP Echo Reply 时间</td><td>ms</td><td>P50 ≤ 50ms, P99 ≤ 200ms</td></tr>
+        <tr><td>丢包率</td><td>PLR</td><td>丢失包数 / 发送包数 × 100%</td><td>%</td><td>≤ 0.1%</td></tr>
+        <tr><td>首字节时间</td><td>TTFB</td><td>请求发出到收到首字节</td><td>ms</td><td>P50 ≤ 300ms</td></tr>
+        <tr><td>总耗时</td><td>TTLB</td><td>请求发出到响应完成</td><td>ms</td><td>按业务定</td></tr>
+        <tr><td>连接成功率</td><td>CSR</td><td>成功TCP连接 / 尝试次数 × 100%</td><td>%</td><td>≥ 99.9%</td></tr>
+        <tr><td>TLS 握手延迟</td><td>TLS_RT</td><td>TLS 握手完成时间</td><td>ms</td><td>P50 ≤ 80ms</td></tr>
+        <tr><td>首Token延迟</td><td>TTFT</td><td>请求发出到首个Token到达</td><td>ms</td><td>P50 ≤ 500ms</td></tr>
+        <tr><td>Token 输出速率</td><td>TPS</td><td>Token 数 / 流式传输时间</td><td>tokens/s</td><td>≥ 30 tokens/s</td></tr>
+        <tr><td>DNS 解析延迟</td><td>DNS_RT</td><td>DNS 查询到响应时间</td><td>ms</td><td>P50 ≤ 20ms</td></tr>
+        <tr><td>抖动</td><td>Jitter</td><td>连续 RTT 差值的平均偏差</td><td>ms</td><td>≤ 10ms</td></tr>
+        <tr><td>可用带宽</td><td>BW</td><td>单位时间有效传输量</td><td>Mbps</td><td>≥ 50Mbps</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">4.2 分位数要求</div>
+    <div class="callout callout-info">
+      <span class="callout-icon">ℹ️</span>
+      <div>
+        <strong>所有延迟类指标必须使用分位数统计</strong>，禁止仅使用平均值。核心指标需同时报告 P50、P90、P95、P99 四个分位值。平均数易受长尾影响，掩盖真实用户体验。
+      </div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">4.3 指标权重与评分模型</div>
+    <table>
+      <thead>
+        <tr><th>指标</th><th>权重</th><th>评分公式</th><th>满分条件</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>连接成功率 (CSR)</td><td>30%</td><td>min(CSR / 99.9% × 100, 100)</td><td>CSR ≥ 99.9%</td></tr>
+        <tr><td>端到端延迟 (TTFB)</td><td>25%</td><td>max(0, 100 - (TTFB_P99 - 500) / 10)</td><td>P99 ≤ 500ms</td></tr>
+        <tr><td>流式质量 (TTFT + TPS)</td><td>20%</td><td>0.5×TTFT分 + 0.5×TPS分</td><td>TTFT_P50 ≤ 500ms, TPS ≥ 30</td></tr>
+        <tr><td>网络稳定性 (PLR + Jitter)</td><td>15%</td><td>0.5×PLR分 + 0.5×Jitter分</td><td>PLR ≤ 0.1%, Jitter ≤ 10ms</td></tr>
+        <tr><td>DNS 质量</td><td>10%</td><td>0.6×延迟分 + 0.4×一致性分</td><td>DNS_RT P50 ≤ 20ms</td></tr>
+      </tbody>
+    </table>
+    <p><strong>综合质量评分</strong> = Σ (指标评分 × 权重)，满分 100 分。评分 &lt; 60 分触发 P0 告警，&lt; 80 分触发 P1 告警。</p>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ==================== CH5: 测试节点规划 ==================== -->
+<div class="section" id="ch5">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <span class="section-title">测试节点规划</span>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">5.1 全球节点布局</div>
+    <table>
+      <thead>
+        <tr><th>区域</th><th>节点城市</th><th>节点数</th><th>运营商</th><th>核心用途</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>中国大陆</strong></td><td>北京、上海、广州、成都</td><td>8</td><td>电信/联通/移动</td><td>国内用户入口质量</td></tr>
+        <tr><td><strong>中国香港</strong></td><td>香港</td><td>2</td><td>CMI/NTT</td><td>跨境出口质量</td></tr>
+        <tr><td><strong>东南亚</strong></td><td>新加坡、东京</td><td>3</td><td>AWS/Azure</td><td>亚太节点质量</td></tr>
+        <tr><td><strong>北美</strong></td><td>弗吉尼亚、加利福尼亚</td><td>3</td><td>AWS/GCP</td><td>上游AI服务可达性</td></tr>
+        <tr><td><strong>欧洲</strong></td><td>法兰克福、伦敦</td><td>2</td><td>AWS/Azure</td><td>欧洲路由质量</td></tr>
+      </tbody>
+    </table>
+    <div class="callout callout-tip">
+      <span class="callout-icon">💡</span>
+      <div>节点选择遵循"用户在哪、上游在哪、瓶颈在哪"三原则，确保拨测数据覆盖完整的请求链路：用户→入口→跨境→上游。</div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">5.2 探针部署规格</div>
+    <table>
+      <thead>
+        <tr><th>规格项</th><th>最低要求</th><th>推荐配置</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>CPU</td><td>1 核</td><td>2 核</td></tr>
+        <tr><td>内存</td><td>512MB</td><td>1GB</td></tr>
+        <tr><td>磁盘</td><td>10GB SSD</td><td>20GB SSD</td></tr>
+        <tr><td>带宽</td><td>10Mbps</td><td>50Mbps</td></tr>
+        <tr><td>操作系统</td><td>Ubuntu 20.04+</td><td>Ubuntu 22.04 LTS</td></tr>
+        <tr><td>运行时</td><td>Docker 20+</td><td>Docker 24 + docker-compose</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">5.3 节点管理架构</div>
+    <div class="flow">
+      <div class="flow-step">Central Controller<br><span style="font-size:11px;color:var(--text-secondary)">任务调度 / 配置下发</span></div>
+      <span class="flow-arrow">↔</span>
+      <div class="flow-step">Agent (全球节点)<br><span style="font-size:11px;color:var(--text-secondary)">执行测试 / 上报数据</span></div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step">Data Pipeline<br><span style="font-size:11px;color:var(--text-secondary)">Kafka → Flink → ClickHouse</span></div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step">Dashboard / Alert<br><span style="font-size:11px;color:var(--text-secondary)">Grafana / 告警网关</span></div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ==================== CH6: 测试流程与用例 ==================== -->
+<div class="section" id="ch6">
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <span class="section-title">测试流程与用例</span>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">6.1 标准测试流程</div>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="t-title">Step 1 — 配置下发</div>
+        <div class="t-desc">Central Controller 向目标节点 Agent 推送测试任务（目标地址、协议、参数、频次）</div>
+      </div>
+      <div class="timeline-item">
+        <div class="t-title">Step 2 — 环境准备</div>
+        <div class="t-desc">Agent 校验网络连通性、清理缓存（DNS 缓存、连接池），确保测试环境干净</div>
+      </div>
+      <div class="timeline-item">
+        <div class="t-title">Step 3 — 测试执行</div>
+        <div class="t-desc">按 L1→L4 顺序依次执行，每层测试结果打标签归档；异常时触发即时诊断（Traceroute/MTR）</div>
+      </div>
+      <div class="timeline-item">
+        <div class="t-title">Step 4 — 数据上报</div>
+        <div class="t-desc">Agent 将结构化测试数据推送至 Kafka Topic，附带节点信息、时间戳、测试参数元数据</div>
+      </div>
+      <div class="timeline-item">
+        <div class="t-title">Step 5 — 聚合分析</div>
+        <div class="t-desc">Flink 实时流计算分位值、成功率等聚合指标，写入 ClickHouse；离线 T+1 生成日报</div>
+      </div>
+      <div class="timeline-item">
+        <div class="t-title">Step 6 — 告警决策</div>
+        <div class="t-desc">规则引擎评估聚合指标，触发阈值告警→告警网关→PagerDuty/企微/飞书</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">6.2 L1 网络可达性测试用例</div>
+    
+    <div class="sub-subsection-title">6.2.1 ICMP Ping 测试</div>
+    <table>
+      <thead><tr><th>参数</th><th>值</th></tr></thead>
+      <tbody>
+        <tr><td>目标</td><td>代理入口 IP / 上游服务 IP</td></tr>
+        <tr><td>包大小</td><td>64 bytes（默认）/ 1500 bytes（MTU 探测）</td></tr>
+        <tr><td>发送次数</td><td>10 次 / 轮</td></tr>
+        <tr><td>间隔</td><td>1s</td></tr>
+        <tr><td>超时</td><td>2s</td></tr>
+        <tr><td>输出指标</td><td>RTT_min, RTT_avg, RTT_max, RTT_mdev, PLR</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sub-subsection-title">6.2.2 TCP Connect 测试</div>
+    <table>
+      <thead><tr><th>参数</th><th>值</th></tr></thead>
+      <tbody>
+        <tr><td>目标</td><td>代理入口 IP:443 / 上游服务 IP:443</td></tr>
+        <tr><td>超时</td><td>5s</td></tr>
+        <tr><td>并发</td><td>1（串行）/ 10（压力测试）</td></tr>
+        <tr><td>输出指标</td><td>Connect_RT, CSR, RST_count</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sub-subsection-title">6.2.3 DNS 解析测试</div>
+    <table>
+      <thead><tr><th>参数</th><th>值</th></tr></thead>
+      <tbody>
+        <tr><td>目标域名</td><td>代理入口域名 / 上游服务域名</td></tr>
+        <tr><td>DNS 服务器</td><td>节点本地 DNS + 8.8.8.8 + 1.1.1.1（对比）</td></tr>
+        <tr><td>记录类型</td><td>A, AAAA, CNAME</td></tr>
+        <tr><td>输出指标</td><td>DNS_RT, 解析结果, 一致性, DNSSEC</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">6.3 L2 传输安全性测试用例</div>
+    
+    <div class="sub-subsection-title">6.3.1 TLS 握手测试</div>
+    <table>
+      <thead><tr><th>参数</th><th>值</th></tr></thead>
+      <tbody>
+        <tr><td>目标</td><td>代理入口 :443</td></tr>
+        <tr><td>协议版本</td><td>TLS 1.2 / TLS 1.3</td></tr>
+        <tr><td>密码套件</td><td>记录协商结果</td></tr>
+        <tr><td>证书验证</td><td>完整证书链、过期时间、CN/SAN 匹配</td></tr>
+        <tr><td>输出指标</td><td>TLS_RT, 协议版本, 证书有效性, OCSP 状态</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sub-subsection-title">6.3.2 安全合规测试</div>
+    <ul>
+      <li><strong>协议降级测试</strong>：尝试以 TLS 1.0/1.1 连接，应被拒绝</li>
+      <li><strong>弱密码套件检测</strong>：扫描是否支持 RC4、DES 等弱加密</li>
+      <li><strong>证书透明度</strong>：验证 CT 日志嵌入</li>
+      <li><strong>HSTS 检查</strong>：验证响应头包含 Strict-Transport-Security</li>
+    </ul>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">6.4 L3 应用可用性测试用例</div>
+
+    <div class="sub-subsection-title">6.4.1 HTTP 基础测试</div>
+    <table>
+      <thead><tr><th>参数</th><th>值</th></tr></thead>
+      <tbody>
+        <tr><td>方法</td><td>GET / POST</td></tr>
+        <tr><td>URL</td><td>代理入口 /v1/models（列表）/ /v1/chat/completions（请求）</td></tr>
+        <tr><td>Headers</td><td>Authorization: Bearer $API_KEY</td></tr>
+        <tr><td>超时</td><td>30s（普通）/ 120s（流式）</td></tr>
+        <tr><td>输出指标</td><td>HTTP_Code, TTFB, TTLB, Content_Length, 下载速率</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sub-subsection-title">6.4.2 SSE 流式响应测试</div>
+    <table>
+      <thead><tr><th>参数</th><th>值</th></tr></thead>
+      <tbody>
+        <tr><td>接口</td><td>POST /v1/chat/completions (stream=true)</td></tr>
+        <tr><td>请求体</td><td>{"model":"gpt-4o-mini","messages":[{"role":"user","content":"Hello"}],"stream":true}</td></tr>
+        <tr><td>验证项</td><td>SSE 格式正确性、[DONE] 结束标记、Token 连续性</td></tr>
+        <tr><td>输出指标</td><td>TTFT, Token 间隔, 总 Token 数, TPS, 断连率</td></tr>
+      </tbody>
+    </table>
+
+    <div class="sub-subsection-title">6.4.3 并发压力测试</div>
+    <table>
+      <thead><tr><th>参数</th><th>值</th></tr></thead>
+      <tbody>
+        <tr><td>阶梯</td><td>1→5→10→20→50→100 并发</td></tr>
+        <tr><td>每阶梯持续</td><td>60s</td></tr>
+        <tr><td>增长策略</td><td>每 60s 并发数翻倍，直到错误率 > 5%</td></tr>
+        <tr><td>输出指标</td><td>各阶梯 QPS, P50/P90/P99 延迟, 错误率</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">6.5 L4 业务正确性测试用例</div>
+    <table>
+      <thead><tr><th>用例编号</th><th>场景</th><th>验证逻辑</th></tr></thead>
+      <tbody>
+        <tr><td>BIZ-001</td><td>模型列表获取</td><td>GET /v1/models 返回200且包含预期模型</td></tr>
+        <tr><td>BIZ-002</td><td>Chat Completion</td><td>非流式请求返回完整 content</td></tr>
+        <tr><td>BIZ-003</td><td>流式 Chat Completion</td><td>stream=true 时 SSE 事件序列完整，含 [DONE]</td></tr>
+        <tr><td>BIZ-004</td><td>Embedding 请求</td><td>返回 embedding 向量维度正确</td></tr>
+        <tr><td>BIZ-005</td><td>无效 API Key</td><td>返回 401，不泄露内部信息</td></tr>
+        <tr><td>BIZ-006</td><td>模型不存在</td><td>返回 404 / model-not-found 错误</td></tr>
+        <tr><td>BIZ-007</td><td>请求频率限制</td><td>超限返回 429，Retry-After 头正确</td></tr>
+        <tr><td>BIZ-008</td><td>多模型路由</td><td>不同 model 参数正确路由到对应上游</td></tr>
+        <tr><td>BIZ-009</td><td>Token 计量</td><td>usage 字段 prompt/completion/total 数值合理</td></tr>
+        <tr><td>BIZ-010</td><td>超时处理</td><td>上游超时时代理返回适当错误码</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">6.6 异常场景专项测试</div>
+    <table>
+      <thead><tr><th>场景</th><th>测试方式</th><th>预期行为</th></tr></thead>
+      <tbody>
+        <tr><td>DNS 劫持</td><td>对比本地 DNS 与公共 DNS 解析结果</td><td>结果一致，否则告警</td></tr>
+        <tr><td>路由绕行</td><td>Traceroute 检查 AS 路径</td><td>无异常绕行（如中国→美国→日本→美国）</td></tr>
+        <tr><td>证书异常</td><td>验证证书过期/域名不匹配/链不完整</td><td>告警并标记不可用</td></tr>
+        <tr><td>TCP RST 注入</td><td>监控 RST 包频率</td><td>RST 率 < 0.1%</td></tr>
+        <tr><td>SSE 中间断流</td><td>发送长 prompt 监控流式输出完整性</td><td>断连率 < 1%</td></tr>
+        <tr><td>跨境链路丢包</td><td>从大陆节点到海外节点 MTR 诊断</td><td>跨境段丢包 < 0.5%</td></tr>
+        <tr><td>DDoS 影响误判</td><td>大流量期间对比正常拨测结果</td><td>区分"攻击影响"与"正常抖动"</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ==================== CH7: 测试结果分析 ==================== -->
+<div class="section" id="ch7">
+  <div class="section-header">
+    <span class="section-num">07</span>
+    <span class="section-title">测试结果分析</span>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">7.1 数据汇聚模型</div>
+    <div class="card card-accent">
+      <table>
+        <thead><tr><th>聚合维度</th><th>聚合函数</th><th>时间窗口</th><th>用途</th></tr></thead>
+        <tbody>
+          <tr><td>节点×目标</td><td>P50/P90/P99, AVG, MAX</td><td>1min / 5min / 1h</td><td>链路质量监控</td></tr>
+          <tr><td>区域×目标</td><td>AVG of 节点指标</td><td>5min / 1h</td><td>区域级视图</td></tr>
+          <tr><td>全局×目标</td><td>AVG of 区域指标</td><td>5min / 1h / 1d</td><td>全局健康度</td></tr>
+          <tr><td>目标×时段</td><td>同环比</td><td>1h / 1d</td><td>趋势分析</td></tr>
+          <tr><td>节点×时段</td><td>趋势预测</td><td>1d / 7d</td><td>容量规划</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">7.2 报告输出规范</div>
+    <table>
+      <thead><tr><th>报告类型</th><th>频次</th><th>内容</th><th>受众</th></tr></thead>
+      <tbody>
+        <tr><td>实时告警</td><td>即时</td><td>异常指标、影响范围、建议操作</td><td>运维/SRE</td></tr>
+        <tr><td>小时报</td><td>每 h</td><td>关键指标分位值、异常事件汇总</td><td>值班运维</td></tr>
+        <tr><td>日报</td><td>每日</td><td>各节点/区域质量评分、Top10 劣化链路、趋势对比</td><td>技术负责人</td></tr>
+        <tr><td>周报</td><td>每周</td><td>SLA 达标率、故障复盘、优化效果追踪</td><td>管理层</td></tr>
+        <tr><td>月报</td><td>每月</td><td>容量分析、供应商对比、下月规划</td><td>决策层</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">7.3 根因分析框架</div>
+    <p>当拨测发现异常时，按以下框架逐层归因：</p>
+    <div class="flow">
+      <div class="flow-step" style="border-color:var(--neon-pink)">L4 业务异常<br><span style="font-size:11px;color:var(--text-secondary)">功能/路由错误</span></div>
+      <span class="flow-arrow">↓归因</span>
+      <div class="flow-step" style="border-color:var(--neon-cyan)">L3 应用异常<br><span style="font-size:11px;color:var(--text-secondary)">HTTP错误/超时</span></div>
+      <span class="flow-arrow">↓归因</span>
+      <div class="flow-step" style="border-color:var(--neon-green)">L2 安全异常<br><span style="font-size:11px;color:var(--text-secondary)">TLS/证书问题</span></div>
+      <span class="flow-arrow">↓归因</span>
+      <div class="flow-step" style="border-color:var(--neon-purple)">L1 网络异常<br><span style="font-size:11px;color:var(--text-secondary)">DNS/TCP/路由</span></div>
+    </div>
+    <div class="card">
+      <table>
+        <thead><tr><th>现象</th><th>L3 状态</th><th>L2 状态</th><th>L1 状态</th><th>根因定位</th></tr></thead>
+        <tbody>
+          <tr><td>API 超时</td><td>TTFB >> 阈值</td><td>TLS 正常</td><td>TCP 延迟高</td><td>网络链路拥塞</td></tr>
+          <tr><td>连接被拒</td><td>连接失败</td><td>—</td><td>TCP RST</td><td>上游服务不可达</td></tr>
+          <tr><td>证书错误</td><td>—</td><td>证书过期</td><td>TCP 正常</td><td>证书未续期</td></tr>
+          <tr><td>DNS 解析异常</td><td>—</td><td>—</td><td>DNS 结果不一致</td><td>DNS 劫持/配置错误</td></tr>
+          <tr><td>SSE 断流</td><td>HTTP 200 但流中断</td><td>TLS 正常</td><td>丢包/抖动</td><td>跨境链路不稳定</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">7.4 数据飞轮闭环</div>
+    <div class="callout callout-critical">
+      <span class="callout-icon">🔄</span>
+      <div>
+        <strong>拨测数据 → 调度决策 → 体验提升 → 更多流量 → 更优数据</strong><br>
+        拨测系统不仅是监控工具，更是数据飞轮的核心输入。每一条拨测记录都在优化全局调度策略，每一次调度优化都在改善用户体验，每一份体验改善都在吸引更多流量，而更多流量意味着更精细的拨测与更优的数据。
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ==================== CH8: 告警与运维保障 ==================== -->
+<div class="section" id="ch8">
+  <div class="section-header">
+    <span class="section-num">08</span>
+    <span class="section-title">告警与运维保障</span>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">8.1 告警分级</div>
+    <table>
+      <thead><tr><th>级别</th><th>条件</th><th>响应时间</th><th>通知渠道</th></tr></thead>
+      <tbody>
+        <tr><td><span class="badge badge-pink">P0</span></td><td>CSR < 90% 或 综合评分 < 60</td><td>5min 内响应</td><td>电话 + PagerDuty + 企微</td></tr>
+        <tr><td><span class="badge badge-yellow">P1</span></td><td>CSR < 95% 或 综合评分 < 80</td><td>15min 内响应</td><td>PagerDuty + 企微</td></tr>
+        <tr><td><span class="badge badge-cyan">P2</span></td><td>P99 延迟超阈值 或 PLR > 1%</td><td>1h 内响应</td><td>企微 + 飞书</td></tr>
+        <tr><td><span class="badge badge-green">P3</span></td><td>指标劣化趋势或潜在风险</td><td>当日处理</td><td>飞书 + 邮件</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">8.2 告警降噪策略</div>
+    <ul>
+      <li><strong>连续 N 次触发</strong>：连续 3 次拨测异常才触发告警，避免单次抖动误报</li>
+      <li><strong>影响范围过滤</strong>：仅影响单节点的异常降级为 P2，多节点同时异常提升为 P0</li>
+      <li><strong>维护窗口</strong>：计划维护期间暂停相关告警</li>
+      <li><strong>关联抑制</strong>：L1 异常时抑制 L2-L4 的下游告警，避免告警风暴</li>
+      <li><strong>趋势预判</strong>：基于 7 天同环比数据，仅在显著偏离时告警</li>
+    </ul>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">8.3 Agent 自监控</div>
+    <table>
+      <thead><tr><th>自监控项</th><th>方法</th><th>异常处理</th></tr></thead>
+      <tbody>
+        <tr><td>Agent 存活</td><td>心跳上报（每 10s）</td><td>连续 3 次心跳丢失 → 节点标记离线</td></tr>
+        <tr><td>测试任务执行</td><td>执行日志 + 结果上报</td><td>连续 5 次无上报 → 节点标记异常</td></tr>
+        <tr><td>系统资源</td><td>CPU/内存/磁盘监控</td><td>CPU > 80% 持续 5min → 降级测试频率</td></tr>
+        <tr><td>时钟同步</td><td>NTP 偏差检测</td><td>偏差 > 100ms → 告警并标记数据不可信</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">8.4 灾备与降级</div>
+    <ul>
+      <li><strong>Controller 多活</strong>：Central Controller 部署多实例，主节点故障自动切换</li>
+      <li><strong>Agent 本地缓存</strong>：与 Controller 通信中断时，Agent 按本地缓存配置继续执行测试</li>
+      <li><strong>数据管道降级</strong>：Kafka 不可用时本地暂存数据，恢复后批量补传</li>
+      <li><strong>探针故障转移</strong>：单节点离线时自动将测试任务调度至同城备选节点</li>
+    </ul>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ==================== CH9: 工具链与部署 ==================== -->
+<div class="section" id="ch9">
+  <div class="section-header">
+    <span class="section-num">09</span>
+    <span class="section-title">工具链与部署</span>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">9.1 技术栈总览</div>
+    <table>
+      <thead><tr><th>组件</th><th>技术选型</th><th>用途</th></tr></thead>
+      <tbody>
+        <tr><td>探针 Agent</td><td>Go / Python</td><td>拨测执行引擎</td></tr>
+        <tr><td>任务调度</td><td>自研 Scheduler / APScheduler</td><td>定时任务管理与分发</td></tr>
+        <tr><td>消息队列</td><td>Apache Kafka</td><td>测试数据传输</td></tr>
+        <tr><td>流计算</td><td>Apache Flink</td><td>实时聚合计算</td></tr>
+        <tr><td>时序存储</td><td>ClickHouse</td><td>指标数据存储与查询</td></tr>
+        <tr><td>可视化</td><td>Grafana</td><td>大盘展示</td></tr>
+        <tr><td>告警网关</td><td>Alertmanager + 自研 Webhook</td><td>告警路由与分发</td></tr>
+        <tr><td>配置中心</td><td>etcd / Consul</td><td>测试任务配置管理</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">9.2 部署架构</div>
+    <div class="card card-accent">
+      <pre style="color:var(--text-secondary);font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.6;">
+┌─────────────────────────────────────────────────────────┐
+│                    Central Controller                    │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐             │
+│  │ Scheduler │  │ Config   │  │ Alert    │             │
+│  │ Service   │  │ Center   │  │ Engine    │             │
+│  └────┬─────┘  └────┬─────┘  └────┬─────┘             │
+│       │              │              │                    │
+│  ─────┴──────────────┴──────────────┴──────             │
+│              gRPC / WebSocket (双向)                     │
+└───────────┬─────────────┬──────────────┬───────────────┘
+            │             │              │
+     ┌──────┴──┐   ┌─────┴───┐   ┌──────┴──┐
+     │ Agent   │   │ Agent   │   │ Agent   │    ...
+     │ 北京    │   │ 新加坡  │   │ 弗吉尼亚│
+     └────┬────┘   └────┬────┘   └────┬────┘
+          │              │              │
+          └──────────────┴──────────────┘
+                    Kafka Topic
+                         │
+               ┌─────────┴─────────┐
+               │    Flink 集群      │
+               └─────────┬─────────┘
+                         │
+               ┌─────────┴─────────┐
+               │   ClickHouse       │
+               └─────────┬─────────┘
+                         │
+          ┌──────────────┼──────────────┐
+          │              │              │
+    ┌─────┴────┐  ┌─────┴────┐  ┌─────┴────┐
+    │ Grafana  │  │ Alert    │  │ Report   │
+    │ Dashboard│  │ Manager  │  │ Service  │
+    └──────────┘  └──────────┘  └──────────┘
+      </pre>
+    </div>
+  </div>
+
+  <div class="subsection">
+    <div class="subsection-title">9.3 Agent 容器化部署</div>
+    <div class="code-block">
+      <span class="lang-tag">yaml</span>
+      <pre><span class="hl-comment"># docker-compose.agent.yml</span>
+<span class="hl-keyword">version</span>: <span class="hl-string">'3.8'</span>
+<span class="hl-keyword">services</span>:
+  <span class="hl-function">probing-agent</span>:
+    <span class="hl-keyword">image</span>: <span class="hl-string">probing-agent:latest</span>
+    <span class="hl-keyword">container_name</span>: <span class="hl-string">probing-agent</span>
+    <span class="hl-keyword">restart</span>: <span class="hl-string">always</span>
+    <span class="hl-keyword">environment</span>:
+      - <span class="hl-variable">CONTROLLER_ADDR</span>=<span class="hl-string">controller.example.com:9000</span>
+      - <span class="hl-variable">NODE_ID</span>=<span class="hl-string">bj-telecom-01</span>
+      - <span class="hl-variable">NODE_REGION</span>=<span class="hl-string">cn-beijing</span>
+      - <span class="hl-variable">KAFKA_BROKERS</span>=<span class="hl-string">kafka1:9092,kafka2:9092</span>
+    <span class="hl-keyword">volumes</span>:
+      - <span class="hl-string">./config:/etc/probing-agent</span>
+      - <span class="hl-string">./logs:/var/log/probing-agent</span>
+    <span class="hl-keyword">deploy</span>:
+      <span class="hl-keyword">resources</span>:
+        <span class="hl-keyword">limits</span>:
+          <span class="hl-variable">cpus</span>: <span class="hl-string">'2.0'</span>
+          <span class="hl-variable">memory</span>: <span class="hl-string">1G</span></pre>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ==================== CH10: 附录 - 测试脚本 ==================== -->
+<div class="section" id="ch10">
+  <div class="section-header">
+    <span class="section-num">10</span>
+    <span class="section-title">附录：测试脚本</span>
+  </div>
+
+  <p>以下脚本覆盖各维度拨测场景，均可在 Linux 环境直接运行。每个脚本输出结构化 JSON 结果，便于管道消费与数据汇聚。</p>
+
+  <!-- ===== Script A: ICMP Ping ===== -->
+  <div class="subsection">
+    <div class="subsection-title">A. ICMP Ping 拨测脚本</div>
+    <p>功能：对目标 IP/域名执行 ICMP Ping 测试，输出 RTT（min/avg/max/mdev）与丢包率。</p>
+    <div class="appendix-code">
+      <div class="appendix-code-header">
+        <span class="title">icmp_ping_test.sh</span>
+        <span class="badge badge-pink">Bash</span>
+      </div>
+<pre>#!/usr/bin/env bash
+#=============================================
+# ICMP Ping 拨测脚本
+# 输出: JSON 格式的 RTT 统计与丢包率
+# 用法: ./icmp_ping_test.sh &lt;target&gt; [count] [interval] [timeout]
+#=============================================
+
+set -euo pipefail
+
+TARGET="${1:?用法: $0 &lt;target&gt; [count] [interval] [timeout]}"
+COUNT="${2:-10}"
+INTERVAL="${3:-1}"
+TIMEOUT="${4:-2}"
+TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+# 执行 ping
+PING_OUTPUT=$(ping -c "$COUNT" -i "$INTERVAL" -W "$TIMEOUT" "$TARGET" 2>&1) || true
+
+# 解析丢包率
+if echo "$PING_OUTPUT" | grep -q "0% packet loss"; then
+  PLR=0
+else
+  PLR=$(echo "$PING_OUTPUT" | tail -1 | grep -oP '\d+(?=% packet loss)' 2>/dev/null || echo "100")
+fi
+
+# 解析 RTT 统计
+if echo "$PING_OUTPUT" | grep -q "rtt min/avg/max/mdev"; then
+  RTT_LINE=$(echo "$PING_OUTPUT" | grep "rtt min/avg/max/mdev")
+  RTT_VALUES=$(echo "$RTT_LINE" | grep -oP '[\d.]+/[\d.]+/[\d.]+/[\d.]+' | head -1)
+  RTT_MIN=$(echo "$RTT_VALUES" | cut -d'/' -f1)
+  RTT_AVG=$(echo "$RTT_VALUES" | cut -d'/' -f2)
+  RTT_MAX=$(echo "$RTT_VALUES" | cut -d'/' -f3)
+  RTT_MDEV=$(echo "$RTT_VALUES" | cut -d'/' -f4)
+else
+  RTT_MIN="null"
+  RTT_AVG="null"
+  RTT_MAX="null"
+  RTT_MDEV="null"
+fi
+
+# 计算抖动 (Jitter = mdev)
+JITTER="$RTT_MDEV"
+
+# 输出 JSON
+cat &lt;&lt;EOF
+{
+  "test_type": "icmp_ping",
+  "target": "$TARGET",
+  "timestamp": "$TIMESTAMP",
+  "params": {
+    "count": $COUNT,
+    "interval": $INTERVAL,
+    "timeout": $TIMEOUT
+  },
+  "result": {
+    "rtt_min_ms": $RTT_MIN,
+    "rtt_avg_ms": $RTT_AVG,
+    "rtt_max_ms": $RTT_MAX,
+    "rtt_mdev_ms": $RTT_MDEV,
+    "packet_loss_rate": $PLR,
+    "jitter_ms": $JITTER
+  },
+  "status": "$([ "$PLR" -eq 100 ] &amp;&amp; echo "fail" || echo "ok")"
+}
+EOF</pre>
+    </div>
+  </div>
+
+  <!-- ===== Script B: TCP Connect ===== -->
+  <div class="subsection">
+    <div class="subsection-title">B. TCP Connect 拨测脚本</div>
+    <p>功能：对目标 IP:Port 执行 TCP 连接测试，测量握手延迟与成功率。</p>
+    <div class="appendix-code">
+      <div class="appendix-code-header">
+        <span class="title">tcp_connect_test.sh</span>
+        <span class="badge badge-pink">Bash</span>
+      </div>
+<pre>#!/usr/bin/env bash
+#=============================================
+# TCP Connect 拨测脚本
+# 输出: JSON 格式的连接延迟与成功率
+# 用法: ./tcp_connect_test.sh &lt;host&gt; &lt;port&gt; [count] [timeout]
+#=============================================
+
+set -euo pipefail
+
+HOST="${1:?用法: $0 &lt;host&gt; &lt;port&gt; [count] [timeout]}"
+PORT="${2:?用法: $0 &lt;host&gt; &lt;port&gt; [count] [timeout]}"
+COUNT="${3:-10}"
+TIMEOUT="${4:-5}"
+TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+SUCCESS=0
+FAIL=0
+LATENCIES=()
+
+for i in $(seq 1 "$COUNT"); do
+  START_NS=$(date +%s%N)
+  if timeout "$TIMEOUT" bash -c "echo >/dev/tcp/$HOST/$PORT" 2>/dev/null; then
+    END_NS=$(date +%s%N)
+    ELAPSED_MS=$(( (END_NS - START_NS) / 1000000 ))
+    LATENCIES+=("$ELAPSED_MS")
+    SUCCESS=$((SUCCESS + 1))
+  else
+    FAIL=$((FAIL + 1))
+  fi
+done
+
+# 计算统计
+TOTAL=$((SUCCESS + FAIL))
+CSR=$(echo "scale=4; $SUCCESS / $TOTAL * 100" | bc 2>/dev/null || echo "0")
+
+if [ ${#LATENCIES[@]} -gt 0 ]; then
+  SORTED=($(printf '%s\n' "${LATENCIES[@]}" | sort -n))
+  MIN=${SORTED[0]}
+  MAX=${SORTED[${#SORTED[@]}-1]}
+  AVG=$(echo "${LATENCIES[@]}" | tr ' ' '\n' | awk '{s+=$1;n++} END {printf "%.2f", s/n}')
+  # P90
+  P90_IDX=$(echo "${#SORTED[@]} * 90 / 100" | bc)
+  P90=${SORTED[$P90_IDX]:-$MAX}
+  # P99
+  P99_IDX=$(echo "${#SORTED[@]} * 99 / 100" | bc)
+  P99=${SORTED[$P99_IDX]:-$MAX}
+else
+  MIN="null"; MAX="null"; AVG="null"; P90="null"; P99="null"
+fi
+
+cat &lt;&lt;EOF
+{
+  "test_type": "tcp_connect",
+  "target": "$HOST:$PORT",
+  "timestamp": "$TIMESTAMP",
+  "params": {
+    "count": $COUNT,
+    "timeout_sec": $TIMEOUT
+  },
+  "result": {
+    "connect_success": $SUCCESS,
+    "connect_fail": $FAIL,
+    "connect_success_rate": $CSR,
+    "latency_min_ms": $MIN,
+    "latency_avg_ms": $AVG,
+    "latency_max_ms": $MAX,
+    "latency_p90_ms": $P90,
+    "latency_p99_ms": $P99
+  },
+  "status": "$([ "$SUCCESS" -eq 0 ] &amp;&amp; echo "fail" || echo "ok")"
+}
+EOF</pre>
+    </div>
+  </div>
+
+  <!-- ===== Script C: DNS ===== -->
+  <div class="subsection">
+    <div class="subsection-title">C. DNS 解析拨测脚本</div>
+    <p>功能：对目标域名执行 DNS 解析，测量解析延迟、结果一致性与 DNSSEC 状态。</p>
+    <div class="appendix-code">
+      <div class="appendix-code-header">
+        <span class="title">dns_resolve_test.sh</span>
+        <span class="badge badge-cyan">Bash</span>
+      </div>
+<pre>#!/usr/bin/env bash
+#=============================================
+# DNS 解析拨测脚本
+# 输出: JSON 格式的解析延迟、结果与一致性
+# 用法: ./dns_resolve_test.sh &lt;domain&gt; [dns_servers]
+#=============================================
+
+set -euo pipefail
+
+DOMAIN="${1:?用法: $0 &lt;domain&gt; [dns_server1,dns_server2,...]}"
+DNS_SERVERS="${2:-8.8.8.8,1.1.1.1,223.5.5.5}"
+TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+# 检查 dig 是否可用
+if ! command -v dig &>/dev/null; then
+  echo '{"error": "dig 命令不可用，请安装 dnsutils"}' >&amp;2
+  exit 1
+fi
+
+RESULT_SERVERS=()
+ALL_RESULTS=()
+
+for DNS_SERVER in $(echo "$DNS_SERVERS" | tr ',' ' '); do
+  START_NS=$(date +%s%N)
+  DIG_OUTPUT=$(dig "@$DNS_SERVER" "$DOMAIN" A +noall +answer +stats +dnssec 2>&amp;1) || true
+  END_NS=$(date +%s%N)
+  QUERY_TIME_MS=$(( (END_NS - START_NS) / 1000000 ))
+
+  # 提取解析结果
+  ANSWERS=$(echo "$DIG_OUTPUT" | grep -E "^[^;].*IN\s+A\s+" | awk '{print $NF}' | sort | tr '\n' ',' | sed 's/,$//')
+
+  # 提取 dig 自报的查询时间
+  DIG_QUERY_MS=$(echo "$DIG_OUTPUT" | grep "Query time" | grep -oP '\d+' | head -1 || echo "$QUERY_TIME_MS")
+
+  # DNSSEC 状态
+  DNSSEC_STATUS=$(echo "$DIG_OUTPUT" | grep -c "RRSIG" || echo "0")
+  if [ "$DNSSEC_STATUS" -gt 0 ]; then
+    DNSSEC="signed"
+  else
+    DNSSEC="unsigned_or_not_checked"
+  fi
+
+  # 检查是否有 AD flag (Authenticated Data)
+  AD_FLAG=$(echo "$DIG_OUTPUT" | grep -c "flags:.*ad" || echo "0")
+
+  RESULT_SERVERS+=("$DNS_SERVER")
+  if [ -n "$ANSWERS" ]; then
+    ALL_RESULTS+=("$ANSWERS")
+  fi
+
+  # 输出每个 DNS 服务器的结果
+  echo "  \"$DNS_SERVER\": {" >&amp;3
+  echo "    \"query_time_ms\": $DIG_QUERY_MS," >&amp;3
+  echo "    \"wall_time_ms\": $QUERY_TIME_MS," >&amp;3
+  echo "    \"answers\": \"$ANSWERS\"," >&amp;3
+  echo "    \"dnssec\": \"$DNSSEC\"," >&amp;3
+  echo "    \"ad_flag\": $AD_FLAG" >&amp;3
+  echo "  }" >&amp;3
+done 3>/tmp/dns_results.json
+
+# 一致性检查
+UNIQUE_RESULTS=($(printf '%s\n' "${ALL_RESULTS[@]}" | sort -u))
+if [ ${#UNIQUE_RESULTS[@]} -le 1 ]; then
+  CONSISTENCY="consistent"
+else
+  CONSISTENCY="inconsistent"
+fi
+
+# 构建输出
+cat &lt;&lt;EOF
+{
+  "test_type": "dns_resolve",
+  "target": "$DOMAIN",
+  "timestamp": "$TIMESTAMP",
+  "params": {
+    "dns_servers": "$(echo $DNS_SERVERS | sed 's/ /,/g')"
+  },
+  "result": {
+    "consistency": "$CONSISTENCY",
+    "unique_result_count": ${#UNIQUE_RESULTS[@]},
+    "servers": $(cat /tmp/dns_results.json | paste -sd',' | sed 's/^/{/' | sed 's/$/}/')
+  },
+  "status": "$([ "$CONSISTENCY" = "consistent" ] &amp;&amp; echo "ok" || echo "warn")"
+}
+EOF
+
+rm -f /tmp/dns_results.json</pre>
+    </div>
+  </div>
+
+  <!-- ===== Script D: TLS Handshake ===== -->
+  <div class="subsection">
+    <div class="subsection-title">D. TLS 握手拨测脚本</div>
+    <p>功能：对目标执行 TLS 握手测试，测量握手延迟、协议版本、证书链有效性。</p>
+    <div class="appendix-code">
+      <div class="appendix-code-header">
+        <span class="title">tls_handshake_test.sh</span>
+        <span class="badge badge-cyan">Bash</span>
+      </div>
+<pre>#!/usr/bin/env bash
+#=============================================
+# TLS 握手拨测脚本
+# 输出: JSON 格式的握手延迟、协议、证书信息
+# 用法: ./tls_handshake_test.sh &lt;host&gt; [port] [timeout]
+#=============================================
+
+set -euo pipefail
+
+HOST="${1:?用法: $0 &lt;host&gt; [port] [timeout]}"
+PORT="${2:-443}"
+TIMEOUT="${3:-10}"
+TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+# TLS 握手延迟测量
+START_NS=$(date +%s%N)
+OPENSSL_OUTPUT=$(echo | timeout "$TIMEOUT" openssl s_client -connect "$HOST:$PORT" -servername "$HOST" 2>&amp;1) || true
+END_NS=$(date +%s%N)
+HANDSHAKE_MS=$(( (END_NS - START_NS) / 1000000 ))
+
+# 协议版本
+PROTOCOL=$(echo "$OPENSSL_OUTPUT" | grep "Protocol" | grep -oP '\d+\.\d+' | head -1 || echo "unknown")
+if echo "$OPENSSL_OUTPUT" | grep -q "TLSv1.3"; then
+  PROTOCOL="1.3"
+elif echo "$OPENSSL_OUTPUT" | grep -q "TLSv1.2"; then
+  PROTOCOL="1.2"
+fi
+
+# 密码套件
+CIPHER=$(echo "$OPENSSL_OUTPUT" | grep "Cipher" | awk '{print $NF}' || echo "unknown")
+
+# 证书信息
+CERT_INFO=$(echo "$OPENSSL_OUTPUT" | sed -n '/-----BEGIN CERT/,/-----END CERT/p' | openssl x509 -noout -subject -dates -issuer 2>/dev/null || echo "parse_failed")
+
+CERT_SUBJECT=$(echo "$CERT_INFO" | grep "subject=" | sed 's/subject= //' || echo "unknown")
+CERT_ISSUER=$(echo "$CERT_INFO" | grep "issuer=" | sed 's/issuer= //' || echo "unknown")
+CERT_NOT_BEFORE=$(echo "$CERT_INFO" | grep "notBefore=" | sed 's/notBefore=//' || echo "unknown")
+CERT_NOT_AFTER=$(echo "$CERT_INFO" | grep "notAfter=" | sed 's/notAfter=//' || echo "unknown")
+
+# 证书过期检查
+CERT_EXPIRED="false"
+if [ "$CERT_NOT_AFTER" != "unknown" ]; then
+  EXPIRY_EPOCH=$(date -d "$CERT_NOT_AFTER" +%s 2>/dev/null || echo "0")
+  NOW_EPOCH=$(date +%s)
+  DAYS_LEFT=$(( (EXPIRY_EPOCH - NOW_EPOCH) / 86400 ))
+  if [ "$NOW_EPOCH" -gt "$EXPIRY_EPOCH" ] 2>/dev/null; then
+    CERT_EXPIRED="true"
+  fi
+else
+  DAYS_LEFT="unknown"
+fi
+
+# 协议降级测试
+DOWNGRADE_TLS10="blocked"
+DOWNGRADE_TLS11="blocked"
+echo | timeout 5 openssl s_client -connect "$HOST:$PORT" -tls1 2>&amp;1 | grep -q "Cipher" &amp;&amp; DOWNGRADE_TLS10="vulnerable" || true
+echo | timeout 5 openssl s_client -connect "$HOST:$PORT" -tls1_1 2>&amp;1 | grep -q "Cipher" &amp;&amp; DOWNGRADE_TLS11="vulnerable" || true
+
+# HSTS 检查
+HSTS_HEADER=$(curl -sI "https://$HOST" 2>/dev/null | grep -i "strict-transport-security" || echo "not_found")
+
+cat &lt;&lt;EOF
+{
+  "test_type": "tls_handshake",
+  "target": "$HOST:$PORT",
+  "timestamp": "$TIMESTAMP",
+  "result": {
+    "handshake_time_ms": $HANDSHAKE_MS,
+    "protocol_version": "TLS$PROTOCOL",
+    "cipher_suite": "$CIPHER",
+    "cert_subject": "$CERT_SUBJECT",
+    "cert_issuer": "$CERT_ISSUER",
+    "cert_not_before": "$CERT_NOT_BEFORE",
+    "cert_not_after": "$CERT_NOT_AFTER",
+    "cert_days_remaining": $DAYS_LEFT,
+    "cert_expired": $CERT_EXPIRED,
+    "downgrade_tls10": "$DOWNGRADE_TLS10",
+    "downgrade_tls11": "$DOWNGRADE_TLS11",
+    "hsts": "$HSTS_HEADER"
+  },
+  "status": "$([ "$CERT_EXPIRED" = "true" ] &amp;&amp; echo "fail" || echo "ok")"
+}
+EOF</pre>
+    </div>
+  </div>
+
+  <!-- ===== Script E: HTTP/API ===== -->
+  <div class="subsection">
+    <div class="subsection-title">E. HTTP / API 拨测脚本</div>
+    <p>功能：对目标 URL 执行 HTTP 请求，测量 TTFB、TTLB、状态码，支持 OpenAI API 兼容接口测试。</p>
+    <div class="appendix-code">
+      <div class="appendix-code-header">
+        <span class="title">http_api_test.py</span>
+        <span class="badge badge-green">Python 3</span>
+      </div>
+<pre>#!/usr/bin/env python3
+"""
+HTTP / API 拨测脚本
+输出: JSON 格式的 TTFB、TTLB、状态码、响应体哈希
+用法: python3 http_api_test.py &lt;url&gt; [--method GET|POST] [--headers ...] [--body ...] [--timeout 30]
+"""
+
+import argparse
+import hashlib
+import json
+import ssl
+import time
+from datetime import datetime, timezone
+from http.client import HTTPSConnection, HTTPConnection
+from urllib.parse import urlparse
+
+
+def probe_http(url: str, method: str = "GET", headers: dict = None,
+               body: bytes = None, timeout: int = 30) -> dict:
+    """执行 HTTP 拨测，返回结构化结果"""
+    parsed = urlparse(url)
+    host = parsed.hostname
+    port = parsed.port or (443 if parsed.scheme == "https" else 80)
+    path = parsed.path or "/"
+    if parsed.query:
+        path = f"{path}?{parsed.query}"
+
+    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    try:
+        # 建立连接
+        t_connect_start = time.monotonic()
+        if parsed.scheme == "https":
+            ctx = ssl.create_default_context()
+            conn = HTTPSConnection(host, port, context=ctx, timeout=timeout)
+        else:
+            conn = HTTPConnection(host, port, timeout=timeout)
+
+        # 发送请求
+        req_headers = headers or {}
+        if host and "Host" not in req_headers:
+            req_headers["Host"] = host
+
+        t_request_start = time.monotonic()
+        conn.request(method, path, body=body, headers=req_headers)
+
+        # 读取响应
+        resp = conn.getresponse()
+        t_ttfb = time.monotonic()
+
+        resp_body = resp.read()
+        t_ttlb = time.monotonic()
+
+        conn.close()
+
+        # 计算指标
+        ttfb_ms = round((t_ttfb - t_request_start) * 1000, 2)
+        ttlb_ms = round((t_ttlb - t_request_start) * 1000, 2)
+        content_length = len(resp_body)
+        body_hash = hashlib.sha256(resp_body).hexdigest()[:16]
+
+        # 下载速率
+        download_time = t_ttlb - t_ttfb
+        download_rate_mbps = 0
+        if download_time > 0:
+            download_rate_mbps = round(
+                (content_length * 8) / (download_time * 1_000_000), 2
+            )
+
+        result = {
+            "test_type": "http_api",
+            "target": url,
+            "timestamp": timestamp,
+            "params": {
+                "method": method,
+                "timeout_sec": timeout,
+            },
+            "result": {
+                "status_code": resp.status,
+                "status_reason": resp.reason,
+                "ttfb_ms": ttfb_ms,
+                "ttlb_ms": ttlb_ms,
+                "content_length": content_length,
+                "body_sha256_prefix": body_hash,
+                "download_rate_mbps": download_rate_mbps,
+                "response_headers": dict(resp.getheaders()),
+            },
+            "status": "ok" if 200 &lt;= resp.status &lt; 300 else "error",
+        }
+
+    except Exception as e:
+        result = {
+            "test_type": "http_api",
+            "target": url,
+            "timestamp": timestamp,
+            "result": {
+                "error": str(e),
+                "error_type": type(e).__name__,
+            },
+            "status": "fail",
+        }
+
+    return result
+
+
+def probe_openai_api(base_url: str, api_key: str, model: str = "gpt-4o-mini",
+                     prompt: str = "Hello", timeout: int = 30) -> dict:
+    """测试 OpenAI 兼容 API"""
+    url = f"{base_url.rstrip('/')}/v1/chat/completions"
+    body = json.dumps({
+        "model": model,
+        "messages": [{"role": "user", "content": prompt}],
+    }).encode()
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {api_key}",
+    }
+    result = probe_http(url, method="POST", headers=headers, body=body, timeout=timeout)
+
+    # 解析响应体
+    if result["status"] == "ok":
+        try:
+            resp_data = json.loads(
+                json.dumps(result["result"])  # ensure serializable
+            )
+            # 尝试读取响应体中的 usage
+            body_text = result["result"].get("body_text", "")
+        except Exception:
+            pass
+
+    result["test_subtype"] = "openai_chat_completion"
+    result["params"]["model"] = model
+    return result
+
+
+def probe_openai_streaming(base_url: str, api_key: str, model: str = "gpt-4o-mini",
+                           prompt: str = "Say hello in 50 words", timeout: int = 60) -> dict:
+    """测试 SSE 流式响应"""
+    import http.client
+    import ssl as ssl_mod
+
+    parsed = urlparse(base_url)
+    host = parsed.hostname
+    port = parsed.port or 443
+    path = f"/v1/chat/completions"
+
+    timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    body = json.dumps({
+        "model": model,
+        "messages": [{"role": "user", "content": prompt}],
+        "stream": True,
+    }).encode()
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {api_key}",
+        "Accept": "text/event-stream",
+    }
+
+    try:
+        ctx = ssl_mod.create_default_context()
+        conn = HTTPSConnection(host, port, context=ctx, timeout=timeout)
+        conn.request("POST", path, body=body, headers=headers)
+
+        resp = conn.getresponse()
+
+        ttft_ms = None
+        token_times = []
+        token_count = 0
+        done_received = False
+        t_start = time.monotonic()
+
+        while True:
+            line = resp.readline()
+            if not line:
+                break
+
+            line_str = line.decode("utf-8", errors="replace").strip()
+
+            if line_str.startswith("data: ") and line_str != "data: [DONE]":
+                token_count += 1
+                now = time.monotonic()
+                if ttft_ms is None:
+                    ttft_ms = round((now - t_start) * 1000, 2)
+                token_times.append(round((now - t_start) * 1000, 2))
+
+            elif line_str == "data: [DONE]":
+                done_received = True
+                break
+
+        t_end = time.monotonic()
+        total_ms = round((t_end - t_start) * 1000, 2)
+
+        # Token 间隔
+        intervals = []
+        for i in range(1, len(token_times)):
+            intervals.append(round(token_times[i] - token_times[i-1], 2))
+
+        avg_interval = round(sum(intervals) / len(intervals), 2) if intervals else None
+        tps = round(token_count / ((t_end - t_start)), 2) if (t_end - t_start) > 0 else 0
+
+        conn.close()
+
+        result = {
+            "test_type": "http_api",
+            "test_subtype": "openai_streaming",
+            "target": f"{base_url}/v1/chat/completions",
+            "timestamp": timestamp,
+            "params": {"model": model, "stream": True, "timeout_sec": timeout},
+            "result": {
+                "status_code": resp.status,
+                "ttft_ms": ttft_ms,
+                "total_ms": total_ms,
+                "token_count": token_count,
+                "tokens_per_second": tps,
+                "avg_token_interval_ms": avg_interval,
+                "done_received": done_received,
+                "stream_interrupted": not done_received,
+            },
+            "status": "ok" if done_received else "warn",
+        }
+
+    except Exception as e:
+        result = {
+            "test_type": "http_api",
+            "test_subtype": "openai_streaming",
+            "target": f"{base_url}/v1/chat/completions",
+            "timestamp": timestamp,
+            "result": {"error": str(e), "error_type": type(e).__name__},
+            "status": "fail",
+        }
+
+    return result
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="HTTP / API 拨测工具")
+    parser.add_argument("url", help="目标 URL")
+    parser.add_argument("--method", default="GET", choices=["GET", "POST"])
+    parser.add_argument("--header", action="append", help="自定义头 (Key:Value)")
+    parser.add_argument("--body", default=None, help="请求体")
+    parser.add_argument("--timeout", type=int, default=30)
+    parser.add_argument("--api-key", help="OpenAI API Key (用于 API 测试)")
+    parser.add_argument("--model", default="gpt-4o-mini", help="模型名称")
+    parser.add_argument("--stream", action="store_true", help="测试流式响应")
+    args = parser.parse_args()
+
+    headers = {}
+    for h in (args.header or []):
+        k, v = h.split(":", 1)
+        headers[k.strip()] = v.strip()
+
+    if args.stream and args.api_key:
+        result = probe_openai_streaming(
+            args.url, args.api_key, args.model, timeout=args.timeout
+        )
+    elif args.api_key:
+        result = probe_openai_api(
+            args.url, args.api_key, args.model, timeout=args.timeout
+        )
+    else:
+        body = args.body.encode() if args.body else None
+        result = probe_http(
+            args.url, args.method, headers, body, args.timeout
+        )
+
+    print(json.dumps(result, indent=2, ensure_ascii=False))</pre>
+    </div>
+  </div>
+
+  <!-- ===== Script F: Traceroute/MTR ===== -->
+  <div class="subsection">
+    <div class="subsection-title">F. Traceroute / MTR 拨测脚本</div>
+    <p>功能：对目标执行路由追踪，检测路由路径、AS 路径与跨境绕行。</p>
+    <div class="appendix-code">
+      <div class="appendix-code-header">
+        <span class="title">traceroute_test.sh</span>
+        <span class="badge badge-purple">Bash</span>
+      </div>
+<pre>#!/usr/bin/env bash
+#=============================================
+# Traceroute / MTR 拨测脚本
+# 输出: JSON 格式的路由路径与逐跳统计
+# 用法: ./traceroute_test.sh &lt;target&gt; [max_hops] [timeout]
+#=============================================
+
+set -euo pipefail
+
+TARGET="${1:?用法: $0 &lt;target&gt; [max_hops] [timeout]}"
+MAX_HOPS="${2:-30}"
+TIMEOUT="${3:-5}"
+TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+# 检查工具可用性
+USE_MTR=false
+if command -v mtr &>/dev/null; then
+  USE_MTR=true
+fi
+
+HOPS=()
+HOP_COUNT=0
+
+if [ "$USE_MTR" = true ]; then
+  # 使用 MTR (更准确的逐跳统计)
+  MTR_OUTPUT=$(mtr -n -r -c 10 -m "$MAX_HOPS" "$TARGET" 2>&1) || true
+
+  while IFS= read -r line; do
+    # 跳过表头
+    if [[ "$line" =~ ^Host ]] || [[ "$line" =~ ^--- ]]; then
+      continue
+    fi
+
+    HOP_NUM=$(echo "$line" | awk '{print $1}' | tr -d '.')
+    HOP_IP=$(echo "$line" | awk '{print $2}')
+    HOP_LOSS=$(echo "$line" | awk '{print $3}' | tr -d '%')
+    HOP_SENT=$(echo "$line" | awk '{print $4}')
+    HOP_AVG=$(echo "$line" | awk '{print $6}')
+    HOP_BEST=$(echo "$line" | awk '{print $7}')
+    HOP_WORST=$(echo "$line" | awk '{print $8}')
+
+    if [ "$HOP_IP" != "???" ] &amp;&amp; [ "$HOP_IP" != "---" ]; then
+      # AS 查询
+      AS_INFO=$(whois -h whois.radb.net "$HOP_IP" 2>/dev/null | grep "^origin:" | awk '{print $2}' | head -1 || echo "unknown")
+
+      HOPS+=("{\"hop\":$HOP_NUM,\"ip\":\"$HOP_IP\",\"as\":\"$AS_INFO\",\"loss_pct\":$HOP_LOSS,\"sent\":$HOP_SENT,\"avg_ms\":$HOP_AVG,\"best_ms\":$HOP_BEST,\"worst_ms\":$HOP_WORST}")
+      HOP_COUNT=$((HOP_COUNT + 1))
+    fi
+  done &lt;&lt;&lt; "$MTR_OUTPUT"
+
+else
+  # 回退到 traceroute
+  TRACE_OUTPUT=$(traceroute -n -m "$MAX_HOPS" -w "$TIMEOUT" "$TARGET" 2>&1) || true
+
+  while IFS= read -r line; do
+    if [[ "$line" =~ ^traceroute ]]; then
+      continue
+    fi
+
+    HOP_NUM=$(echo "$line" | awk '{print $1}')
+    HOP_IP=$(echo "$line" | awk '{print $2}')
+
+    if [ "$HOP_IP" != "*" ] &amp;&amp; [[ "$HOP_IP" =~ ^[0-9] ]]; then
+      # 尝试提取延迟
+      LATENCIES=$(echo "$line" | grep -oP '[\d.]+ ms' | grep -oP '[\d.]+' | tr '\n' ',' | sed 's/,$//')
+      AVG_LAT=$(echo "$LATENCIES" | tr ',' '\n' | awk '{s+=$1;n++} END {printf "%.2f", s/n}' 2>/dev/null || echo "null")
+
+      AS_INFO=$(whois -h whois.radb.net "$HOP_IP" 2>/dev/null | grep "^origin:" | awk '{print $2}' | head -1 || echo "unknown")
+
+      HOPS+=("{\"hop\":$HOP_NUM,\"ip\":\"$HOP_IP\",\"as\":\"$AS_INFO\",\"avg_ms\":$AVG_LAT}")
+      HOP_COUNT=$((HOP_COUNT + 1))
+    fi
+  done &lt;&lt;&lt; "$TRACE_OUTPUT"
+fi
+
+# 跨境绕行检测
+ROUTE_PATH=$(printf '%s,' "${HOPS[@]}" | sed 's/,$//')
+CROSS_BORDER="unknown"
+
+# 简单的 AS 路径分析
+AS_LIST=$(printf '%s\n' "${HOPS[@]}" | grep -oP '"as":"[^"]*"' | cut -d'"' -f4 | uniq | tr '\n' ',' | sed 's/,$//')
+
+cat &lt;&lt;EOF
+{
+  "test_type": "traceroute",
+  "tool": "$([ "$USE_MTR" = true ] &amp;&amp; echo "mtr" || echo "traceroute")",
+  "target": "$TARGET",
+  "timestamp": "$TIMESTAMP",
+  "params": {
+    "max_hops": $MAX_HOPS,
+    "timeout_sec": $TIMEOUT
+  },
+  "result": {
+    "hop_count": $HOP_COUNT,
+    "hops": [$(printf '%s,' "${HOPS[@]}" | sed 's/,$//')],
+    "as_path": "$AS_LIST",
+    "cross_border": "$CROSS_BORDER"
+  },
+  "status": "ok"
+}
+EOF</pre>
+    </div>
+  </div>
+
+  <!-- ===== Script G: Bandwidth ===== -->
+  <div class="subsection">
+    <div class="subsection-title">G. 带宽估测脚本</div>
+    <p>功能：通过多连接并行下载测试可用带宽，适用于拨测场景的轻量级估测。</p>
+    <div class="appendix-code">
+      <div class="appendix-code-header">
+        <span class="title">bandwidth_test.sh</span>
+        <span class="badge badge-yellow">Bash</span>
+      </div>
+<pre>#!/usr/bin/env bash
+#=============================================
+# 带宽估测脚本 (轻量级)
+# 输出: JSON 格式的下载速率与估算带宽
+# 用法: ./bandwidth_test.sh &lt;download_url&gt; [duration_sec] [connections]
+#=============================================
+
+set -euo pipefail
+
+URL="${1:?用法: $0 &lt;download_url&gt; [duration_sec] [connections]}"
+DURATION="${2:-10}"
+CONNECTIONS="${3:-4}"
+TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+# 使用 curl 多连接并行下载测试
+TOTAL_BYTES=0
+PIDS=()
+
+TEMP_DIR=$(mktemp -d)
+trap "rm -rf $TEMP_DIR" EXIT
+
+START_TIME=$(date +%s%N)
+
+for i in $(seq 1 "$CONNECTIONS"); do
+  curl -s -o "$TEMP_DIR/part_$i" --max-time "$DURATION" "$URL" &
+  PIDS+=($!)
+done
+
+# 等待所有下载完成
+for PID in "${PIDS[@]}"; do
+  wait "$PID" 2>/dev/null || true
+done
+
+END_TIME=$(date +%s%N)
+
+# 统计总字节数
+for f in "$TEMP_DIR"/part_*; do
+  if [ -f "$f" ]; then
+    SIZE=$(stat -c%s "$f" 2>/dev/null || echo "0")
+    TOTAL_BYTES=$((TOTAL_BYTES + SIZE))
+  fi
+done
+
+# 计算带宽
+ELAPSED_SEC=$(echo "scale=3; ($END_TIME - $START_TIME) / 1000000000" | bc)
+DOWNLOAD_RATE_MBPS=$(echo "scale=2; $TOTAL_BYTES * 8 / ($ELAPSED_SEC * 1000000)" | bc)
+DOWNLOAD_RATE_MBPS=$(echo "scale=2; $TOTAL_BYTES * 8 / ($ELAPSED_SEC * 1000000)" | bc 2>/dev/null || echo "0")
+
+cat &lt;&lt;EOF
+{
+  "test_type": "bandwidth",
+  "target": "$URL",
+  "timestamp": "$TIMESTAMP",
+  "params": {
+    "duration_sec": $DURATION,
+    "connections": $CONNECTIONS
+  },
+  "result": {
+    "total_bytes": $TOTAL_BYTES,
+    "elapsed_sec": $ELAPSED_SEC,
+    "download_rate_mbps": $DOWNLOAD_RATE_MBPS
+  },
+  "status": "$([ "$TOTAL_BYTES" -gt 0 ] &amp;&amp; echo "ok" || echo "fail")"
+}
+EOF</pre>
+    </div>
+  </div>
+
+  <!-- ===== Script H: Comprehensive ===== -->
+  <div class="subsection">
+    <div class="subsection-title">H. 综合拨测编排脚本</div>
+    <p>功能：编排所有拨测脚本，按 L1→L4 顺序依次执行，汇总输出完整测试报告。</p>
+    <div class="appendix-code">
+      <div class="appendix-code-header">
+        <span class="title">comprehensive_prober.sh</span>
+        <span class="badge badge-pink">Bash</span>
+      </div>
+<pre>#!/usr/bin/env bash
+#=============================================
+# 综合拨测编排脚本
+# 按 L1→L4 顺序执行全部拨测，输出汇总 JSON
+# 用法: ./comprehensive_prober.sh &lt;config.json&gt;
+#=============================================
+
+set -euo pipefail
+
+CONFIG_FILE="${1:?用法: $0 &lt;config.json&gt;}"
+
+# 加载配置
+if [ ! -f "$CONFIG_FILE" ]; then
+  echo "配置文件不存在: $CONFIG_FILE" >&amp;2
+  exit 1
+fi
+
+# 解析配置 (需要 jq)
+if ! command -v jq &>/dev/null; then
+  echo "需要 jq 命令，请安装: apt-get install jq" >&amp;2
+  exit 1
+fi
+
+TARGET_HOST=$(jq -r '.target_host // empty' "$CONFIG_FILE")
+TARGET_PORT=$(jq -r '.target_port // "443"' "$CONFIG_FILE")
+TARGET_DOMAIN=$(jq -r '.target_domain // empty' "$CONFIG_FILE")
+API_BASE_URL=$(jq -r '.api_base_url // empty' "$CONFIG_FILE")
+API_KEY=$(jq -r '.api_key // empty' "$CONFIG_FILE")
+API_MODEL=$(jq -r '.api_model // "gpt-4o-mini"' "$CONFIG_FILE")
+PING_COUNT=$(jq -r '.ping_count // 10' "$CONFIG_FILE")
+TCP_COUNT=$(jq -r '.tcp_count // 10' "$CONFIG_FILE")
+HTTP_TIMEOUT=$(jq -r '.http_timeout // 30' "$CONFIG_FILE")
+OUTPUT_DIR=$(jq -r '.output_dir // "./probing_results"' "$CONFIG_FILE")
+SCRIPT_DIR=$(cd "$(dirname "$0")" &amp;&amp; pwd)
+
+TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+RUN_ID="probing_$(date +%Y%m%d_%H%M%S)"
+RESULT_DIR="$OUTPUT_DIR/$RUN_ID"
+mkdir -p "$RESULT_DIR"
+
+echo "========================================"
+echo "  综合拨测启动"
+echo "  运行ID: $RUN_ID"
+echo "  时间:   $TIMESTAMP"
+echo "========================================"
+
+SUMMARY=()
+OVERALL_STATUS="ok"
+
+# ===== L1: 网络可达性 =====
+echo ""
+echo "[L1] 网络可达性测试"
+echo "--------------------"
+
+# ICMP Ping
+if [ -n "$TARGET_HOST" ]; then
+  echo "→ ICMP Ping: $TARGET_HOST"
+  ICMP_RESULT=$("$SCRIPT_DIR/icmp_ping_test.sh" "$TARGET_HOST" "$PING_COUNT" 2>&amp;1) || true
+  echo "$ICMP_RESULT" > "$RESULT_DIR/l1_icmp_ping.json"
+  ICMP_STATUS=$(echo "$ICMP_RESULT" | jq -r '.status // "error"')
+  SUMMARY+=("{\"layer\":\"L1\",\"test\":\"icmp_ping\",\"target\":\"$TARGET_HOST\",\"status\":\"$ICMP_STATUS\"}")
+  [ "$ICMP_STATUS" = "fail" ] &amp;&amp; OVERALL_STATUS="degraded"
+  echo "  状态: $ICMP_STATUS"
+fi
+
+# TCP Connect
+if [ -n "$TARGET_HOST" ]; then
+  echo "→ TCP Connect: $TARGET_HOST:$TARGET_PORT"
+  TCP_RESULT=$("$SCRIPT_DIR/tcp_connect_test.sh" "$TARGET_HOST" "$TARGET_PORT" "$TCP_COUNT" 2>&amp;1) || true
+  echo "$TCP_RESULT" > "$RESULT_DIR/l1_tcp_connect.json"
+  TCP_STATUS=$(echo "$TCP_RESULT" | jq -r '.status // "error"')
+  SUMMARY+=("{\"layer\":\"L1\",\"test\":\"tcp_connect\",\"target\":\"$TARGET_HOST:$TARGET_PORT\",\"status\":\"$TCP_STATUS\"}")
+  [ "$TCP_STATUS" = "fail" ] &amp;&amp; OVERALL_STATUS="degraded"
+  echo "  状态: $TCP_STATUS"
+fi
+
+# DNS Resolve
+if [ -n "$TARGET_DOMAIN" ]; then
+  echo "→ DNS Resolve: $TARGET_DOMAIN"
+  DNS_RESULT=$("$SCRIPT_DIR/dns_resolve_test.sh" "$TARGET_DOMAIN" 2>&amp;1) || true
+  echo "$DNS_RESULT" > "$RESULT_DIR/l1_dns_resolve.json"
+  DNS_STATUS=$(echo "$DNS_RESULT" | jq -r '.status // "error"')
+  SUMMARY+=("{\"layer\":\"L1\",\"test\":\"dns_resolve\",\"target\":\"$TARGET_DOMAIN\",\"status\":\"$DNS_STATUS\"}")
+  [ "$DNS_STATUS" = "warn" ] &amp;&amp; [ "$OVERALL_STATUS" = "ok" ] &amp;&amp; OVERALL_STATUS="warn"
+  echo "  状态: $DNS_STATUS"
+fi
+
+# Traceroute
+if [ -n "$TARGET_HOST" ]; then
+  echo "→ Traceroute: $TARGET_HOST"
+  TRACE_RESULT=$("$SCRIPT_DIR/traceroute_test.sh" "$TARGET_HOST" 2>&amp;1) || true
+  echo "$TRACE_RESULT" > "$RESULT_DIR/l1_traceroute.json"
+  TRACE_STATUS=$(echo "$TRACE_RESULT" | jq -r '.status // "error"')
+  SUMMARY+=("{\"layer\":\"L1\",\"test\":\"traceroute\",\"target\":\"$TARGET_HOST\",\"status\":\"$TRACE_STATUS\"}")
+  echo "  状态: $TRACE_STATUS"
+fi
+
+# ===== L2: 传输安全性 =====
+echo ""
+echo "[L2] 传输安全性测试"
+echo "--------------------"
+
+if [ -n "$TARGET_DOMAIN" ]; then
+  echo "→ TLS Handshake: $TARGET_DOMAIN:$TARGET_PORT"
+  TLS_RESULT=$("$SCRIPT_DIR/tls_handshake_test.sh" "$TARGET_DOMAIN" "$TARGET_PORT" 2>&amp;1) || true
+  echo "$TLS_RESULT" > "$RESULT_DIR/l2_tls_handshake.json"
+  TLS_STATUS=$(echo "$TLS_RESULT" | jq -r '.status // "error"')
+  SUMMARY+=("{\"layer\":\"L2\",\"test\":\"tls_handshake\",\"target\":\"$TARGET_DOMAIN:$TARGET_PORT\",\"status\":\"$TLS_STATUS\"}")
+  [ "$TLS_STATUS" = "fail" ] &amp;&amp; OVERALL_STATUS="degraded"
+  echo "  状态: $TLS_STATUS"
+fi
+
+# ===== L3: 应用可用性 =====
+echo ""
+echo "[L3] 应用可用性测试"
+echo "--------------------"
+
+if [ -n "$API_BASE_URL" ]; then
+  # 非流式 API 测试
+  if [ -n "$API_KEY" ]; then
+    echo "→ API Chat Completion (非流式): $API_BASE_URL"
+    API_RESULT=$(python3 "$SCRIPT_DIR/http_api_test.py" \
+      "$API_BASE_URL/v1/chat/completions" \
+      --method POST \
+      --header "Content-Type: application/json" \
+      --header "Authorization: Bearer $API_KEY" \
+      --body "{\"model\":\"$API_MODEL\",\"messages\":[{\"role\":\"user\",\"content\":\"Hi\"}]}" \
+      --timeout "$HTTP_TIMEOUT" 2>&amp;1) || true
+    echo "$API_RESULT" > "$RESULT_DIR/l3_api_chat.json"
+    API_STATUS=$(echo "$API_RESULT" | jq -r '.status // "error"')
+    SUMMARY+=("{\"layer\":\"L3\",\"test\":\"api_chat_completion\",\"target\":\"$API_BASE_URL\",\"status\":\"$API_STATUS\"}")
+    [ "$API_STATUS" = "fail" ] &amp;&amp; OVERALL_STATUS="degraded"
+    echo "  状态: $API_STATUS"
+
+    # 流式 SSE 测试
+    echo "→ API Streaming SSE: $API_BASE_URL"
+    SSE_RESULT=$(python3 "$SCRIPT_DIR/http_api_test.py" \
+      "$API_BASE_URL" \
+      --api-key "$API_KEY" \
+      --model "$API_MODEL" \
+      --stream \
+      --timeout 60 2>&amp;1) || true
+    echo "$SSE_RESULT" > "$RESULT_DIR/l3_api_streaming.json"
+    SSE_STATUS=$(echo "$SSE_RESULT" | jq -r '.status // "error"')
+    SUMMARY+=("{\"layer\":\"L3\",\"test\":\"api_streaming_sse\",\"target\":\"$API_BASE_URL\",\"status\":\"$SSE_STATUS\"}")
+    [ "$SSE_STATUS" = "warn" ] &amp;&amp; [ "$OVERALL_STATUS" = "ok" ] &amp;&amp; OVERALL_STATUS="warn"
+    echo "  状态: $SSE_STATUS"
+  else
+    # 无 API Key 时仅做 HTTP 基础测试
+    echo "→ HTTP 基础测试: $API_BASE_URL/v1/models"
+    HTTP_RESULT=$(python3 "$SCRIPT_DIR/http_api_test.py" \
+      "$API_BASE_URL/v1/models" \
+      --timeout "$HTTP_TIMEOUT" 2>&amp;1) || true
+    echo "$HTTP_RESULT" > "$RESULT_DIR/l3_http_basic.json"
+    HTTP_STATUS=$(echo "$HTTP_RESULT" | jq -r '.status // "error"')
+    SUMMARY+=("{\"layer\":\"L3\",\"test\":\"http_basic\",\"target\":\"$API_BASE_URL/v1/models\",\"status\":\"$HTTP_STATUS\"}")
+    echo "  状态: $HTTP_STATUS"
+  fi
+fi
+
+# ===== 汇总报告 =====
+echo ""
+echo "========================================"
+echo "  拨测完成"
+echo "  总体状态: $OVERALL_STATUS"
+echo "  结果目录: $RESULT_DIR"
+echo "========================================"
+
+# 生成汇总 JSON
+cat > "$RESULT_DIR/summary.json" &lt;&lt;EOF
+{
+  "run_id": "$RUN_ID",
+  "timestamp": "$TIMESTAMP",
+  "overall_status": "$OVERALL_STATUS",
+  "tests": [$(printf '%s,' "${SUMMARY[@]}" | sed 's/,$//')],
+  "result_dir": "$RESULT_DIR"
+}
+EOF
+
+echo ""
+echo "汇总报告: $RESULT_DIR/summary.json"
+echo ""
+echo "各测试结果:"
+for f in "$RESULT_DIR"/*.json; do
+  [ "$(basename "$f")" = "summary.json" ] &amp;&amp; continue
+  echo "  - $(basename "$f")"
+done</pre>
+    </div>
+  </div>
+
+  <!-- ===== Script I: Config Template ===== -->
+  <div class="subsection">
+    <div class="subsection-title">I. 配置文件模板</div>
+    <p>综合拨测编排脚本所需的配置文件模板。</p>
+    <div class="appendix-code">
+      <div class="appendix-code-header">
+        <span class="title">probing_config.json</span>
+        <span class="badge badge-purple">JSON</span>
+      </div>
+<pre>{
+  "target_host": "api.example.com",
+  "target_port": 443,
+  "target_domain": "api.example.com",
+  "api_base_url": "https://api.example.com",
+  "api_key": "sk-xxxxxxxxxxxxxxxx",
+  "api_model": "gpt-4o-mini",
+  "ping_count": 10,
+  "tcp_count": 10,
+  "http_timeout": 30,
+  "output_dir": "./probing_results",
+  "schedule": {
+    "l1_network": { "interval_sec": 30, "enabled": true },
+    "l2_security": { "interval_sec": 60, "enabled": true },
+    "l3_application": { "interval_sec": 30, "enabled": true },
+    "l4_business": { "interval_sec": 60, "enabled": true }
+  },
+  "alert": {
+    "p0": { "channels": ["phone", "pagerduty", "wechat"], "min_confirm": 3 },
+    "p1": { "channels": ["pagerduty", "wechat"], "min_confirm": 2 },
+    "p2": { "channels": ["wechat", "feishu"], "min_confirm": 1 },
+    "p3": { "channels": ["feishu", "email"], "min_confirm": 1 }
+  }
+}</pre>
+    </div>
+  </div>
+
+  <!-- ===== Script J: Business Logic ===== -->
+  <div class="subsection">
+    <div class="subsection-title">J. 业务正确性测试脚本</div>
+    <p>功能：验证 AI API 代理的业务逻辑正确性，涵盖模型列表、认证鉴权、路由、计量等。</p>
+    <div class="appendix-code">
+      <div class="appendix-code-header">
+        <span class="title">business_logic_test.py</span>
+        <span class="badge badge-green">Python 3</span>
+      </div>
+<pre>#!/usr/bin/env python3
+"""
+业务正确性测试脚本
+验证 AI API 代理的业务逻辑正确性
+用法: python3 business_logic_test.py --base-url https://api.example.com --api-key sk-xxx
+"""
+
+import argparse
+import json
+import sys
+import time
+from datetime import datetime, timezone
+from urllib.request import Request, urlopen
+from urllib.error import HTTPError, URLError
+
+
+class BusinessProber:
+    """业务正确性拨测"""
+
+    def __init__(self, base_url: str, api_key: str, timeout: int = 30):
+        self.base_url = base_url.rstrip("/")
+        self.api_key = api_key
+        self.timeout = timeout
+        self.timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        self.results = []
+
+    def _request(self, method: str, path: str, body: dict = None,
+                 headers: dict = None, expect_status: int = 200) -> dict:
+        """执行 HTTP 请求"""
+        url = f"{self.base_url}{path}"
+        req_headers = headers or {}
+        req_headers.setdefault("Authorization", f"Bearer {self.api_key}")
+
+        if body:
+            req_headers.setdefault("Content-Type", "application/json")
+            data = json.dumps(body).encode()
+        else:
+            data = None
+
+        req = Request(url, data=data, headers=req_headers, method=method)
+
+        start = time.monotonic()
+        try:
+            resp = urlopen(req, timeout=self.timeout)
+            ttfb = time.monotonic() - start
+            resp_body = json.loads(resp.read())
+            status = resp.status
+            error = None
+        except HTTPError as e:
+            ttfb = time.monotonic() - start
+            try:
+                resp_body = json.loads(e.read())
+            except Exception:
+                resp_body = {"raw": str(e)}
+            status = e.code
+            error = str(e)
+        except Exception as e:
+            ttfb = time.monotonic() - start
+            resp_body = {}
+            status = 0
+            error = str(e)
+
+        return {
+            "status_code": status,
+            "ttfb_sec": round(ttfb, 3),
+            "body": resp_body,
+            "error": error,
+            "pass": status == expect_status,
+        }
+
+    def test_biz_001_models_list(self) -> dict:
+        """BIZ-001: 模型列表获取"""
+        r = self._request("GET", "/v1/models")
+        models = []
+        if r["pass"] and "data" in r.get("body", {}):
+            models = [m.get("id", "") for m in r["body"]["data"]]
+        return {
+            "case": "BIZ-001",
+            "name": "模型列表获取",
+            "result": r,
+            "models_found": models,
+            "detail": f"找到 {len(models)} 个模型" if r["pass"] else r["error"],
+        }
+
+    def test_biz_002_chat_completion(self) -> dict:
+        """BIZ-002: Chat Completion"""
+        r = self._request("POST", "/v1/chat/completions", body={
+            "model": "gpt-4o-mini",
+            "messages": [{"role": "user", "content": "Say hello"}],
+        })
+        content = ""
+        if r["pass"] and "choices" in r.get("body", {}):
+            content = r["body"]["choices"][0].get("message", {}).get("content", "")
+        return {
+            "case": "BIZ-002",
+            "name": "Chat Completion (非流式)",
+            "result": r,
+            "response_content": content[:100] if content else "",
+            "detail": "响应内容完整" if content else "响应内容为空或异常",
+        }
+
+    def test_biz_005_invalid_key(self) -> dict:
+        """BIZ-005: 无效 API Key"""
+        r = self._request("GET", "/v1/models",
+                          headers={"Authorization": "Bearer invalid_key_12345"},
+                          expect_status=401)
+        return {
+            "case": "BIZ-005",
+            "name": "无效 API Key 拒绝",
+            "result": r,
+            "detail": "正确拒绝无效Key" if r["pass"] else "未正确拒绝无效Key",
+        }
+
+    def test_biz_006_model_not_found(self) -> dict:
+        """BIZ-006: 模型不存在"""
+        r = self._request("POST", "/v1/chat/completions", body={
+            "model": "nonexistent-model-xyz",
+            "messages": [{"role": "user", "content": "test"}],
+        }, expect_status=404)
+        return {
+            "case": "BIZ-006",
+            "name": "模型不存在",
+            "result": r,
+            "detail": "正确返回错误" if r["pass"] else "未正确处理",
+        }
+
+    def test_biz_009_token_usage(self) -> dict:
+        """BIZ-009: Token 计量"""
+        r = self._request("POST", "/v1/chat/completions", body={
+            "model": "gpt-4o-mini",
+            "messages": [{"role": "user", "content": "Hi"}],
+        })
+        usage = r.get("body", {}).get("usage", {})
+        return {
+            "case": "BIZ-009",
+            "name": "Token 计量",
+            "result": r,
+            "usage": usage,
+            "detail": f"prompt={usage.get('prompt_tokens','?')} "
+                      f"completion={usage.get('completion_tokens','?')} "
+                      f"total={usage.get('total_tokens','?')}" if usage else "无usage字段",
+        }
+
+    def run_all(self) -> dict:
+        """执行全部业务测试"""
+        tests = [
+            self.test_biz_001_models_list,
+            self.test_biz_002_chat_completion,
+            self.test_biz_005_invalid_key,
+            self.test_biz_006_model_not_found,
+            self.test_biz_009_token_usage,
+        ]
+
+        for test_fn in tests:
+            try:
+                result = test_fn()
+                self.results.append(result)
+            except Exception as e:
+                self.results.append({
+                    "case": test_fn.__name__,
+                    "error": str(e),
+                    "pass": False,
+                })
+
+        passed = sum(1 for r in self.results if r.get("result", {}).get("pass", False))
+        total = len(self.results)
+
+        return {
+            "test_type": "business_logic",
+            "timestamp": self.timestamp,
+            "target": self.base_url,
+            "summary": {
+                "total": total,
+                "passed": passed,
+                "failed": total - passed,
+                "pass_rate": f"{passed/total*100:.1f}%" if total > 0 else "0%",
+            },
+            "results": self.results,
+            "status": "ok" if passed == total else "fail",
+        }
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="业务正确性拨测")
+    parser.add_argument("--base-url", required=True, help="API 基础 URL")
+    parser.add_argument("--api-key", required=True, help="API Key")
+    parser.add_argument("--timeout", type=int, default=30)
+    args = parser.parse_args()
+
+    prober = BusinessProber(args.base_url, args.api_key, args.timeout)
+    report = prober.run_all()
+
+    print(json.dumps(report, indent=2, ensure_ascii=False))
+    sys.exit(0 if report["status"] == "ok" else 1)</pre>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== FOOTER ==================== -->
+<div class="footer">
+  <p>拨测服务方案 v1.0 &mdash; AI API 代理/网关业务 &mdash; 2026-06-15</p>
+  <p style="margin-top:6px;font-size:11px;color:#555">本方案为内部技术文档，包含完整的测试体系设计与可执行脚本</p>
+</div>
+
+</div>
+</body>
+</html>

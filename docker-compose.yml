@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  cyberprobe:
+    build: .
+    container_name: cyberprobe
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    volumes:
+      - cyberprobe-data:/app/data
+    environment:
+      - PORT=3001
+      - JWT_SECRET=change-me-to-a-random-secret
+      - DEMO_MODE=0
+
+volumes:
+  cyberprobe-data:
